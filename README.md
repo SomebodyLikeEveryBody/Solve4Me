@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="https://raw.githubusercontent.com/SomebodyLikeEveryBody/Solve4Me/3f33c0b2263ab359c5197dc537f1a48fb4804801/favicon.svg" alt="Solve4Me" title="Solve4Me" height="200px">
+  <img src="https://raw.githubusercontent.com/SomebodyLikeEveryBody/Solve4Me/73e2d7f405898fcc3089d843908b7832fc50aa7f/logo.svg" alt="Solve4Me" title="Solve4Me" height="200px">
   <br>
 </h1>
 
