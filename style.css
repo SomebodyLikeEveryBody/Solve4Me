@@ -26,7 +26,7 @@ textarea#input
     background-color: lightblue;
     background-image: url('./icon.svg');
     background-repeat: no-repeat;
-    background-size: 55px;
+    background-size: 120px;
     border-radius: 10px;
     border: black 1px solid;
     opacity: 0.6;
