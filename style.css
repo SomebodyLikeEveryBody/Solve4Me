@@ -1,0 +1,78 @@
+html
+{
+    height: 100%;
+}
+
+body
+{
+    height: calc(100% - 10px);
+    display: flex;
+    margin: 0px;
+    padding: 5px;
+    background-color: black;
+}
+
+div#input_container
+{
+    width: 50%;
+    height: calc(100% - 5px);
+    margin: 0px;
+}
+
+textarea#input
+{
+    width: calc(100% - 25px);
+    height: calc(95% - 70px);
+    background-color: lightblue;
+    background-image: url('./icon.svg');
+    background-repeat: no-repeat;
+    background-size: 55px;
+    border-radius: 10px;
+    border: black 1px solid;
+    opacity: 0.6;
+    resize: none;
+    padding: 10px;
+    padding-top: 50px;
+}
+
+button#do_solve
+{
+    width: calc(100% - 3px);
+    height: calc(5% - 3px);
+    opacity: 0.6;
+    border-radius: 10px;
+    background-color: lightgrey;
+}
+
+div#output_container
+{
+    width: 50%;
+    height: calc(100% - 5px);
+    margin: 0px;
+}
+
+button#looper, button#looper:hover
+{
+    width: 100%;
+    height: calc(5% - 3px);
+    opacity: 0.6;
+    border: black 1px solid;
+    border-radius: 10px;
+    background-color: lightgrey;
+}
+
+section#output
+{
+    width: calc(100% - 22px);
+    height: calc(95% - 20px);
+    background-color: rgb(107, 167, 187);
+    border: black 1px solid;
+    border-radius: 10px;
+    opacity: 0.6;
+    padding: 10px;
+}
+
+button#do_solve:focus, button#do_solve:hover
+{
+    background-color: #b8b8b8;
+}
