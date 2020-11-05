@@ -1,3 +1,8 @@
+<h1 align="center">
+  <img src="https://raw.githubusercontent.com/SomebodyLikeEveryBody/Solve4Me/3f33c0b2263ab359c5197dc537f1a48fb4804801/favicon.svg" alt="Solve4Me" title="Solve4Me" height="200px">
+  <br>
+</h1>
+
 # Solve4Me
 
 ## Description
