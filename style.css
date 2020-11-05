@@ -22,7 +22,7 @@ div#input_container
 textarea#input
 {
     width: calc(100% - 25px);
-    height: calc(95% - 60px);
+    height: calc(95% - 70px);
     background-color: lightblue;
     background-image: url('./icon.svg');
     background-repeat: no-repeat;
@@ -32,7 +32,7 @@ textarea#input
     opacity: 0.6;
     resize: none;
     padding: 10px;
-    padding-top: 50px;
+    padding-top: 60px;
 }
 
 button#do_solve
