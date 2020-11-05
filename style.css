@@ -22,7 +22,7 @@ div#input_container
 textarea#input
 {
     width: calc(100% - 25px);
-    height: calc(95% - 70px);
+    height: calc(95% - 60px);
     background-color: lightblue;
     background-image: url('./icon.svg');
     background-repeat: no-repeat;
@@ -64,7 +64,7 @@ button#looper, button#looper:hover
 section#output
 {
     width: calc(100% - 22px);
-    height: calc(95% - 20px);
+    height: calc(95% - 16px);
     background-color: rgb(107, 167, 187);
     border: black 1px solid;
     border-radius: 10px;
