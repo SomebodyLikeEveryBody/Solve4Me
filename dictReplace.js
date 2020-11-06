@@ -56,6 +56,7 @@ g_dictReplace = {
     '{R': 'ℝ',
     '{Z': 'ℤ',
     'forall': '∀',
+    '!iexist': '∄',
     'iexist': '∃',
     'sd': '∋',
     'not': '¬',
