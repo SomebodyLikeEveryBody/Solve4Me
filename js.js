@@ -13,6 +13,16 @@ function getAllStatements(pStr)
     return pStr.split('\n')
 }
 
+function translateS4MtoTex(pInText, pDictTranslate) {
+    let outText = pInText;
+
+	for (const key in pDictTranslate) {
+        outText = outText.replace(new RegExp(key, 'g'), pDictTranslate[key]);
+	}
+
+	return (outText);
+}
+
 /*
  * MAIN
  * */
@@ -26,6 +36,7 @@ $(function () {
             let statements = getAllStatements($('textarea#input').val());
             let appened_element = null;
             for (statement of statements) {
+                statement = translateS4MtoTex(statement, g_dictReplace);
                 appened_element = $('<div class="formula"></div>');
                 appened_element.append($(texToMathML(statement)));
                 appened_element.hide(0);

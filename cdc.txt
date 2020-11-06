@@ -32,8 +32,6 @@ afficher le resultat dans la section en utilisant un formalisme mathématique
 - pour mettre un truc en gras on fait \bo bidule
 - pour faire une matrice ou n'importe quoi qui fait une sorte de tableau on fait (\table a, b, c; d, e, f)
 - pour faire un vecteur, on fait v↖{→}
-- 
-
 
 metalang:
 α = alpha
@@ -53,7 +51,7 @@ metalang:
 λ = lambda
 Ξ = Ksi
 ξ = ksi
-∏ = Pi
+∏ = Pi = product
 π = pi
 ∑ = Sigma = sum
 σ = sigma
@@ -69,6 +67,7 @@ metalang:
 τ = tau
 υ = upsilon
 χ = khi
+≠ = !=
 
 ¬ = not
 ∧ = and
@@ -91,7 +90,7 @@ metalang:
 ∀ = forall
 ∃ = exist
 ∋ = such that = sd
-∋
+
 ⇒ = implies = ==>
 ⇔ = equiv = <=>
 ⇌ = <-->
@@ -127,4 +126,8 @@ metalang:
 ± = moreless = +-
 
 ≢ = not congruent = !==
+
+∑ = Sigma = sum
+∏ = Pi = product
+
 
