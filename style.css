@@ -41,6 +41,7 @@ textarea#input
     resize: none;
     padding: 10px;
     padding-top: 60px;
+    font-size: 1.5em;
 }
 
 button#do_solve
@@ -80,7 +81,7 @@ section#output
     padding: 10px;
     padding-top: 25px;
     overflow: auto;
-    font-size: 1em;
+    font-size: 1.5em;
     display: block;
 }
 

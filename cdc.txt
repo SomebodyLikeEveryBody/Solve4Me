@@ -1,0 +1,130 @@
+given:
+a belongs to N
+b belongs to Z
+c belongs to Q
+d belongs to R
+e belongs to [0, 11] inter N
+f belongs to ]-3, 3] inter Q
+g belongs to Q+
+a + b + c = 42
+a - 3b + c = 48
+b === 3c [a]
+end
+
+whatis(a)
+whatis(b)
+whatis(c)
+whatis(d, e, f)
+
+
+step1:
+parser ce qui est écrit pour en tirer une expression ou un objet
+on considere qu'il y a une assertion par ligne
+faire la resolution
+afficher le resultat dans la section en utilisant un formalisme mathématique
+
+
+- pour faire un indice genre y0, on fait y_0
+- pour faire une somme, on fait ∑↙{i=0}↖{i=n} (i) = { n(n+1) } / 2
+- pour les limites on fait {lim}↙{h→0}
+- pour faire une intégrale sur un intervale on fait ∫_D (f(x))dx
+- pour faire une integrale sur un intervale borné, on fait ∫↙{-3}↖{7} (f(x))dx
+- pour mettre un truc en gras on fait \bo bidule
+- pour faire une matrice ou n'importe quoi qui fait une sorte de tableau on fait (\table a, b, c; d, e, f)
+- pour faire un vecteur, on fait v↖{→}
+- 
+
+
+metalang:
+α = alpha
+β = beta
+Γ = Gamma
+γ = gamma
+∆ = Delta
+δ = delta
+ε = epsilon
+ζ = zeta
+η = eta
+θ = theta
+ι = iota
+κ = kappa
+Θ = Theta
+Λ = Lambda
+λ = lambda
+Ξ = Ksi
+ξ = ksi
+∏ = Pi
+π = pi
+∑ = Sigma = sum
+σ = sigma
+Φ = Phi
+φ = phi
+Ψ = Psi
+ψ = psi
+Ω = Omega
+ω = omega
+μ = mu
+ν = nu
+ρ = rho
+τ = tau
+υ = upsilon
+χ = khi
+
+¬ = not
+∧ = and
+∨ = or
+⊕ = xor
+
+
+∂ = dron
+∇ = grad
+√ = root
+° = degrees
+ℂ = C
+ℍ = H
+ℕ = N
+ℙ = P
+ℚ = Q
+ℝ = R
+ℤ = Z
+
+∀ = forall
+∃ = exist
+∋ = such that = sd
+∋
+⇒ = implies = ==>
+⇔ = equiv = <=>
+⇌ = <-->
+∈ = belongs2
+∉ = !belongs2
+
+∫ = integral
+∬ = 2integral
+∭ = 3integral
+∮ = ?
+∯ = ?
+∰ = ?
+∱ = ?
+∲ = ?
+∳ = ?
+↙ = mettre en bas
+→ = tend vers
+↖ = mettre en haut
+
+√^n {bidule} = root_n(bidule)
+⋃ = reunion
+⋂ = reinter
+∩ = inter
+∪ = union
+⊂ = included
+⊄ = !included
+⊆ = included=
+⊈ = !included!
+
+⋀ = ?
+⋁ = ?
+
+± = moreless = +-
+
+≢ = not congruent = !==
+
