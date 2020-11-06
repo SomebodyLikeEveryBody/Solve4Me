@@ -5,11 +5,19 @@ html
 
 body
 {
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    background-color: black;
+}
+
+div#Solve4Me_app
+{
+    background-color: black;
+    display:flex;
     height: calc(100% - 10px);
-    display: flex;
     margin: 0px;
     padding: 5px;
-    background-color: black;
 }
 
 div#input_container
@@ -64,15 +72,27 @@ button#looper, button#looper:hover
 section#output
 {
     width: calc(100% - 22px);
-    height: calc(95% - 16px);
+    height: calc(95% - 31px);
     background-color: rgb(107, 167, 187);
     border: black 1px solid;
     border-radius: 10px;
     opacity: 0.6;
     padding: 10px;
+    padding-top: 25px;
+    overflow: auto;
+    font-size: 1em;
+    display: block;
 }
 
 button#do_solve:focus, button#do_solve:hover
 {
     background-color: #b8b8b8;
+}
+
+div.formula
+{
+    border: black 1px solid;
+    background-color: rgb(138, 198, 218);
+    padding: 10px;
+    margin: 10px;
 }
