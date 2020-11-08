@@ -114,3 +114,8 @@ span.statement_id
     float: left;
     font-size: 1em;
 }
+
+button
+{
+    font-size: 1.8vh;
+}

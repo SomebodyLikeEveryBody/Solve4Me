@@ -110,8 +110,6 @@ function updateScreen() {
         /* display end label */
         displayLabelToOutputScreen(texToMathML(translateS4MtoTex('end', g_dictReplace)), 'step');
 
-        console.log(getAllStatements($('textarea#input').val()));
-
     } else {
         console.log('ya pas de segment given / end');
     }
@@ -127,7 +125,7 @@ $(function () {
 
     $('textarea#input').keydown((e) => {
 
-        let currentInputScreenContent = $('textarea#input').val();
+        let currentInputScreenContent = getAllInputs();
         if (e.which === 38
             || e.which == 40
             || e.which == 13) {
