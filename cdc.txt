@@ -33,6 +33,9 @@ afficher le resultat dans la section en utilisant un formalisme mathématique
 - pour faire une matrice ou n'importe quoi qui fait une sorte de tableau on fait (\table a, b, c; d, e, f)
 - pour faire un vecteur, on fait v↖{→}
 
+
+
+
 metalang:
 α = alpha
 β = beta

@@ -4,13 +4,12 @@
   <meta charset="UTF-8">
   <title>Solve4Me</title>
   <link rel="stylesheet" type="text/css" href="./style.css" />
-  <link rel="icon" href="./favicon.svg" sizes="any" type="image/svg+xml" />
+  <link rel="icon" href="./imgs/favicon.svg" sizes="any" type="image/svg+xml" />
  </head>
  <body>
   <div id="Solve4Me_app">
    <div id="input_container">
-    <textarea id="input">
-    </textarea>
+    <textarea id="input"></textarea>
     <button id="do_solve">Solve - Copyright &copy; Victor Vague</button>  
    </div>
    <div id="output_container">
@@ -19,9 +18,14 @@
     </section>
    </div>
   </div>
+  <script type="text/javascript" src="./libs/jquery/jquery-3.5.1.min.js"></script>
+  <script type="text/javascript" src="./libs/jqmath/jqmath-etc-0.4.6.min.js" charset="utf-8"></script>
+  <script type="text/javascript" src="./libs/nerdamer/nerdamer.core.js"></script>
+  <script type="text/javascript" src="./libs/nerdamer/Algebra.js"></script>
+  <script type="text/javascript" src="./libs/nerdamer/Calculus.js"></script>
+  <script type="text/javascript" src="./libs/nerdamer/Solve.js"></script>
+  <script type="text/javascript" src="./libs/nerdamer/Extra.js"></script>
   <script type="text/javascript" src="./dictReplace.js"></script>
-  <script type="text/javascript" src="./jquery-3.5.1.min.js"></script>
-  <script type="text/javascript" src="./jqmath-etc-0.4.6.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="./js.js"></script>
+  <script type="text/javascript" src="./Solve4Me.js"></script>
  </body>
 </html>

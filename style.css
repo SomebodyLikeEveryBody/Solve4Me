@@ -32,7 +32,7 @@ textarea#input
     width: calc(100% - 25px);
     height: calc(95% - 70px);
     background-color: lightblue;
-    background-image: url('./icon.svg');
+    background-image: url('./imgs/icon.svg');
     background-repeat: no-repeat;
     background-size: 120px;
     border-radius: 10px;
@@ -93,7 +93,24 @@ button#do_solve:focus, button#do_solve:hover
 div.formula
 {
     border: black 1px solid;
-    background-color: rgb(138, 198, 218);
+    background-color: rgb(143, 213, 237);
     padding: 10px;
     margin: 10px;
+}
+
+div.step
+{
+    border: black 1px dashed;
+    border-radius: 10px;
+    background-color: rgb(150, 229, 255);
+    padding: 10px;
+    margin: 10px;
+    color: rgb(9, 100, 220);
+    font-weight: bold;
+}
+
+span.statement_id
+{
+    float: left;
+    font-size: 1em;
 }
