@@ -101,7 +101,7 @@ function updateScreen() {
         for (statement of statements) {
             if (statement !== '') {
                 statement = texToMathML(translateS4MtoTex(statement, g_dictReplace)).outerHTML
-                displayLabelToOutputScreen('<span class="statement_id">(' + (count++) + '):</span>' + statement, 'formula');
+                displayLabelToOutputScreen('<div class="statement_id">(' + (count++) + '):</div>' + statement, 'formula');
             } else {
                 displayLabelToOutputScreen(texToMathML(''), 'jump_line');
             }

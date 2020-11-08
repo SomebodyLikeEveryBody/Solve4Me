@@ -9,6 +9,7 @@ body
     margin: 0px;
     padding: 0px;
     background-color: black;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 div#Solve4Me_app
@@ -96,6 +97,8 @@ div.formula
     background-color: rgb(143, 213, 237);
     padding: 10px;
     margin: 10px;
+    display: flex;
+    justify-content: space-between;
 }
 
 div.step
@@ -106,16 +109,30 @@ div.step
     padding: 10px;
     margin: 10px;
     color: rgb(9, 100, 220);
-    font-weight: bold;
+    display: flex;
+    justify-content: center;
 }
 
-span.statement_id
+fmath
 {
-    float: left;
-    font-size: 1em;
+    float: center;
+}
+
+div.statement_id
+{
+    font-size: 1.8vh;
+    display: flex;
+    justify-content: center;
 }
 
 button
 {
     font-size: 1.8vh;
+}
+
+.ma-block
+{
+    font-size: 2.2vh;
+    text-align: center;
+    width: 100%;
 }
