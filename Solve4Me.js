@@ -14,18 +14,51 @@ function OutputScreenContent() {
     }
 }
 
+function Translater(pDictionnary) {
+    this.dictionnary = pDictionnary;
 
-/*
- * textToMathML():
- * Takes a string and return a <math> DOM object corresponding to the expression
- * Uses the M.sToMathE() function in jqmath.js
- * */
-function texToMathML(pTexStr) {
-    return (M.sToMathE(pTexStr, true));
+    /*
+    * textToMathML():
+    * Takes a string in Tex and return a <math> DOM object corresponding to the expression
+    * Uses the M.sToMathE() function in jqmath.js
+    * */
+    this.texToMathML = function (pInText) {
+        return (M.sToMathE(pInText, true));
+    };
+
+    /*
+    * S4MtoTex():
+    * Takes a string in S4M language and return a Tex string according to pDictTranslate correspondances
+    * */
+    this.S4MtoTex = function (pInText) {
+        let outText = pInText;
+
+        for (const key in this.dictionnary) {
+            outText = outText.replace(new RegExp(key, 'g'), this.dictionnary[key]);
+        }
+    
+        return (outText);
+    };
+
+    this.S4MToMathML = function (pInText) {
+        return this.texToMathML(this.S4MtoTex(pInText));
+    };
 }
 
-function getGivenStr(pStr) {
-    let givenStr = pStr.match(/given:[ ]*\n(.|\n)*?\nend/gmi)
+/*
+ * getInputStr():
+ * gives the content of textarea#input in raw str
+ * */
+function getInputStr() {
+    return $('textarea#input').val();
+}
+
+/*
+ * getGivenStr():
+ * return the part of #textarea#input that is between given: and end included
+ * */
+function getGivenStr() {
+    let givenStr = getInputStr().match(/given:[ ]*\n(.|\n)*?\nend/gmi)
     if (givenStr !== null) {
         return givenStr[0];
     }
@@ -33,37 +66,39 @@ function getGivenStr(pStr) {
     return ('');
 }
 
-function getAllGivenLines(pStr)
+/*
+ * getAllGivenLines():
+ * return an array containg each statement AND each jump line defined in textarea#input in S4M language
+ * */
+function getAllGivenLines()
 {
-    let givenStatements = pStr.match(/given:[ ]*\n(.|\n)*?\nend/gmi)
-    if (givenStatements !== null) {
-        givenStatements = givenStatements[0];
-        givenStatements = givenStatements.replace(/given:[ ]*\n/mi, '');
+    let givenStr = getGivenStr();
+    let givenStatements = [];
+
+    if (givenStr) {
+        givenStatements = givenStr.replace(/given:[ ]*\n/mi, '');
         givenStatements = givenStatements.replace(/\nend/, '');
         givenStatements = givenStatements.split('\n');
-    } else {
-        givenStatements = [];
     }
 
     return givenStatements;
 }
 
-function getAllStatements(pStr) {
-    let givenLines = getAllGivenLines(pStr);
+/*
+ * getAllStatements():
+ * return an array containg each statement defined in textarea#input in S4M language
+ * */
+function getAllStatements() {
+    let givenLines = getAllGivenLines();
 
     return (givenLines.filter((str) => (str != '')));
 }
 
-function translateS4MtoTex(pInText, pDictTranslate) {
-    let outText = pInText;
-
-	for (const key in pDictTranslate) {
-        outText = outText.replace(new RegExp(key, 'g'), pDictTranslate[key]);
-	}
-
-	return (outText);
-}
-
+/*
+ * getClassOfLabel(pStatement):
+ * return the class of a div.label according to the first char of its content (pStatement)
+ * not very clean design, I will probably modify this later
+ * */
 function getClassOfLabel(pStatement) {
     let retClass = '';
     switch (pStatement[0]) {
@@ -80,35 +115,38 @@ function getClassOfLabel(pStatement) {
     return retClass;
 }
 
-function getInputStr() {
-    return $('textarea#input').val();
-}
-
+/*
+ * displayLabelToOutputScreen(pStr, pType):
+ * take the content of a label (pStr) and it's class name (pType), and create the corresponding div
+ * to append it in the output screen
+ * Note: steps are appended on top and bottom wereas formula and jump_line are appened before the end label
+ * */
 function displayLabelToOutputScreen(pStr, pType) {
     let appened_element = $('<div class="' + pType + '"></div>');
     
     appened_element.append($(pStr));
     appened_element.hide(0);
 
-    $('section#output').append(appened_element);
+    if (pType.includes('step')) {
+        $('section#output').append(appened_element);
+    } else {
+        $('section#output div.end_label').before(appened_element);
+    }
+
     appened_element.animate({width: 'toggle'}, 200);
 }
 
-function displayLabelToOutputScreen2(pStr, pType) {
-    let appened_element = $('<div class="' + pType + '"></div>');
-    
-    appened_element.append($(pStr));
-    appened_element.hide(0);
+/*
+ * updateScreen():
+ * take the content of a label (pStr) and it's class name, and create the corresponding div
+ * to append it in the output screen
+ * Note: steps are appended on top and bottom wereas formula and jump_line are appened before the end label
+ * */
+function updateScreen() {
 
-    $('section#output div.end_label').before(appened_element);
-    appened_element.animate({width: 'toggle'}, 200);
-}
-
-
-function updateScreen2() {
-
-    let givenLines = getAllGivenLines(getInputStr())
+    let givenLines = getAllGivenLines()
     let labelDivsInOutputScreen = $('section#output div.formula, section#output div.jump_line');
+    let translater = new Translater(g_dictReplace);
     
     /* if there's no given mention, we simply clear the output screen */
     if (givenLines.length === 0) {
@@ -118,8 +156,8 @@ function updateScreen2() {
     } else {
         /* display " given" and "end" labels */
         if ($('section#output div.given_label').length == 0) {
-            displayLabelToOutputScreen(texToMathML(translateS4MtoTex('given:', g_dictReplace)), 'label step given_label');
-            displayLabelToOutputScreen(texToMathML(translateS4MtoTex('end', g_dictReplace)), 'label step end_label');
+            displayLabelToOutputScreen(translater.S4MToMathML('given:'), 'label step given_label');
+            displayLabelToOutputScreen(translater.S4MToMathML('end', g_dictReplace), 'label step end_label');
         }
         
         let count = 1;
@@ -127,22 +165,22 @@ function updateScreen2() {
         let tempContent = '';
         for (const givenLineIndex in givenLines) {
             /* if there is not the corresponding div, we create it  */
-            tempClass = getClassOfLabel(translateS4MtoTex(givenLines[givenLineIndex], g_dictReplace));
-            tempContent = texToMathML(translateS4MtoTex(givenLines[givenLineIndex], g_dictReplace)).outerHTML;
+            tempClass = getClassOfLabel(translater.S4MtoTex(givenLines[givenLineIndex]));
+            tempContent = translater.S4MToMathML(givenLines[givenLineIndex]).outerHTML;
             if (labelDivsInOutputScreen[givenLineIndex] === undefined) {
                 if (tempClass === 'formula') {
-                    displayLabelToOutputScreen2('<div class="statement_id">(' + (count++) + '):</div>' + tempContent, 'label ' + tempClass);
+                    displayLabelToOutputScreen('<div class="statement_id">(' + (count++) + '):</div>' + tempContent, 'label ' + tempClass);
                 } else {
-                    displayLabelToOutputScreen2(texToMathML(translateS4MtoTex(givenLines[givenLineIndex], g_dictReplace)), 'label ' + tempClass);
+                    displayLabelToOutputScreen(translater.S4MToMathML(givenLines[givenLineIndex]), 'label ' + tempClass);
                 }
             } else {
                 /* if it exists but it has a different value of the one in input screen*/
                 let math_block = labelDivsInOutputScreen[givenLineIndex].querySelector('.ma-block');
                 
-                if (translateS4MtoTex(givenLines[givenLineIndex], g_dictReplace) !== math_block.getAttribute('alttext')) {
+                if (translater.S4MtoTex(givenLines[givenLineIndex]) !== math_block.getAttribute('alttext')) {
                     $(labelDivsInOutputScreen[givenLineIndex]).animate({width: 'toggle'}, 200, function () {
                         $(math_block).remove();
-                        $(labelDivsInOutputScreen[givenLineIndex]).append($(texToMathML(translateS4MtoTex(givenLines[givenLineIndex], g_dictReplace)).outerHTML));
+                        $(labelDivsInOutputScreen[givenLineIndex]).append($(translater.S4MToMathML(givenLines[givenLineIndex])).outerHTML);
                         $(labelDivsInOutputScreen[givenLineIndex]).animate({width: 'toggle'}, 200);
                     });
                 }
@@ -161,43 +199,14 @@ function updateScreen2() {
     }
 }
 
-function updateScreen() {
-
-    $('section#output').html('');
-
-    let statements = getAllGivenLines(getInputStr());
-
-    if (statements.length !== 0) {
-        /* Display given: label */
-        displayLabelToOutputScreen(texToMathML(translateS4MtoTex('given:', g_dictReplace)), 'label step');
-        
-        /* display each statement */
-        let count = 1;
-        for (statement of statements) {
-            if (statement !== '') {
-                statement = texToMathML(translateS4MtoTex(statement, g_dictReplace)).outerHTML
-                displayLabelToOutputScreen('<div class="statement_id">(' + (count++) + '):</div>' + statement, 'label formula');
-            } else {
-                displayLabelToOutputScreen(texToMathML(''), 'jump_line');
-            }
-        }
-
-        /* display end label */
-        displayLabelToOutputScreen(texToMathML(translateS4MtoTex('end', g_dictReplace)), 'label step');
-
-    } else {
-        //rien
-    }
-}
 
 /*
  * MAIN
  * */
 $(function () {
-
     let outputScreenContent = new OutputScreenContent();
     $('textarea#input').focus();
-    updateScreen2();
+    updateScreen();
 
     $('textarea#input').keydown((e) => {
         let currentInputScreenContent = getInputStr();
@@ -206,27 +215,14 @@ $(function () {
             || e.which == 13) {
                 if (outputScreenContent.getValue() !== currentInputScreenContent) {
                     outputScreenContent.setValue(currentInputScreenContent);
-                    updateScreen2();
+                    updateScreen();
                 }
         }
     });
 
     $('button#do_solve').click(() => {
         if ($('textarea#input').val() !== '') {
-            $('section#output').html('');
-
-            let statements = getAllGivenLines($('textarea#input').val());
-
-            let appened_element = null;
-            for (statement of statements) {
-                statement = translateS4MtoTex(statement, g_dictReplace);
-                appened_element = $('<div class="' + getClassOfLabel(statement) + '"><span class="statement_id">(1):</span></div>');
-                appened_element.append($(texToMathML(statement)));
-                appened_element.hide(0);
-
-                $('section#output').append(appened_element);
-                appened_element.animate({width: 'toggle'}, 200);
-            }
+            console.log(getInputStr());
         }
     });
 
