@@ -85,10 +85,10 @@ function getAllGivenLines()
 }
 
 /*
- * getAllStatements():
+ * getAllGivenStatements():
  * return an array containg each statement defined in textarea#input in S4M language
  * */
-function getAllStatements() {
+function getAllGivenStatements() {
     let givenLines = getAllGivenLines();
 
     return (givenLines.filter((str) => (str != '')));
@@ -144,8 +144,8 @@ function displayLabelToOutputScreen(pStr, pType) {
  * */
 function updateScreen() {
 
-    let givenLines = getAllGivenLines()
-    let labelDivsInOutputScreen = $('section#output div.formula, section#output div.jump_line');
+    let givenLines = getAllGivenStatements()
+    let labelDivsInOutputScreen = $('section#output div.formula');
     let translater = new Translater(g_dictReplace);
     
     /* if there's no given mention, we simply clear the output screen */
@@ -165,14 +165,9 @@ function updateScreen() {
         let tempContent = '';
         for (const givenLineIndex in givenLines) {
             /* if there is not the corresponding div, we create it  */
-            tempClass = getClassOfLabel(translater.S4MtoTex(givenLines[givenLineIndex]));
             tempContent = translater.S4MToMathML(givenLines[givenLineIndex]).outerHTML;
             if (labelDivsInOutputScreen[givenLineIndex] === undefined) {
-                if (tempClass === 'formula') {
-                    displayLabelToOutputScreen('<div class="statement_id">(' + (count++) + '):</div>' + tempContent, 'label ' + tempClass);
-                } else {
-                    displayLabelToOutputScreen(translater.S4MToMathML(givenLines[givenLineIndex]), 'label ' + tempClass);
-                }
+                    displayLabelToOutputScreen('<div class="statement_id">(' + (count++) + '):</div>' + tempContent, 'label formula');
             } else {
                 /* if it exists but it has a different value of the one in input screen*/
                 let math_block = labelDivsInOutputScreen[givenLineIndex].querySelector('.ma-block');
@@ -180,7 +175,7 @@ function updateScreen() {
                 if (translater.S4MtoTex(givenLines[givenLineIndex]) !== math_block.getAttribute('alttext')) {
                     $(labelDivsInOutputScreen[givenLineIndex]).animate({width: 'toggle'}, 200, function () {
                         $(math_block).remove();
-                        $(labelDivsInOutputScreen[givenLineIndex]).append($(translater.S4MToMathML(givenLines[givenLineIndex])).outerHTML);
+                        $(labelDivsInOutputScreen[givenLineIndex]).append($(translater.S4MToMathML(givenLines[givenLineIndex]).outerHTML));
                         $(labelDivsInOutputScreen[givenLineIndex]).animate({width: 'toggle'}, 200);
                     });
                 }
