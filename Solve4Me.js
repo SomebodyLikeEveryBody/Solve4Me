@@ -1,9 +1,22 @@
+/*******************************************************************************************
+* Solver:
+* Object that manages the solving feature, heart of all this.
+* */
+function Solver() {
+    this.solve = function () {
+        return ('x = {-b + root(b^2 - 4ac)}/{2a}');
+    };
+}
+
+
+
+
 /******************************************************************************************
 * Translater:
 * Object that manages all translation languages
 * (S4ML to Tex, Tex, to MathML, S4ML to MathML).
-* S4ML to Tex language is base on pDictionnary passed as argument, an object containing all
-* Regex correspondance between S4ML patterns and Tex Patterns
+* S4ML to Tex language is based on the pDictionnary passed as argument, a simple
+* javascript object containing all Regex correspondance between S4ML patterns and Tex Patterns
 * */
 function Translater(pDictionnary) {
     this.dictionnary = pDictionnary;
@@ -450,18 +463,6 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
         this.setLooperEvent();
     };
 }
-
-/*******************************************************************************************
-* Solver:
-* Object that manages the solving feature, heart of all this.
-* */
-function Solver() {
-    this.solve = function () {
-        return ('x = {-b + root(b^2 - 4ac)}/{2a}');
-    };
-}
-
-
 
 
 /*******************************************************************************************
