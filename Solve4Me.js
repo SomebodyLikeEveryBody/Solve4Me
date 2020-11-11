@@ -1,19 +1,10 @@
-function OutputScreenContent() {
-    this.value = '';
-
-    this.setValue = function (pValue) {
-        this.value = pValue;
-    }
-
-    this.getValue = function () {
-        return (this.value);
-    }
-
-    this.isSameValueAs = function (pValue) {
-        return (pValue === this.value);
-    }
-}
-
+/******************************************************************************************
+* Translater:
+* Object that manages all translation languages
+* (S4ML to Tex, Tex, to MathML, S4ML to MathML).
+* S4ML to Tex language is base on pDictionnary passed as argument, an object containing all
+* Regex correspondance between S4ML patterns and Tex Patterns
+* */
 function Translater(pDictionnary) {
     this.dictionnary = pDictionnary;
 
@@ -28,9 +19,9 @@ function Translater(pDictionnary) {
 
     /*
     * S4MtoTex():
-    * Takes a string in S4M language and return a Tex string according to pDictTranslate correspondances
+    * Takes a string in S4M Language and return a Tex string according to pDictTranslate correspondances
     * */
-    this.S4MtoTex = function (pInText) {
+    this.S4MLtoTex = function (pInText) {
         let outText = pInText;
 
         for (const key in this.dictionnary) {
@@ -40,188 +31,450 @@ function Translater(pDictionnary) {
         return (outText);
     };
 
-    this.S4MToMathML = function (pInText) {
-        return this.texToMathML(this.S4MtoTex(pInText));
+    /*
+    * S4MLToMathML():
+    * Takes a string in S4M Language and return a <math> DOM object corresponding to the expression
+    * */
+    this.S4MLToMathML = function (pInText) {
+        return this.texToMathML(this.S4MLtoTex(pInText));
     };
 }
 
-/*
- * getInputStr():
- * gives the content of textarea#input in raw str
- * */
-function getInputStr() {
-    return $('textarea#input').val();
-}
+/******************************************************************************************
+* InputScreen:
+* Wrapper object that wrap textarea#input
+* to implement directly all needed features
+* */
+function InputScreen() {
+    this.defaultContent = 'given:\n\nend';
+    this.jqEl = $('textarea#input');
 
-/*
- * getGivenStr():
- * return the part of #textarea#input that is between given: and end included
- * */
-function getGivenStr() {
-    let givenStr = getInputStr().match(/given:[ ]*\n(.|\n)*?\nend/gmi)
-    if (givenStr !== null) {
-        return givenStr[0];
+    /*
+    * this.keydown():
+    * Shortcut to use this.jqEl.keydown
+    * */
+    this.keydown = function (pFunction) {
+        this.jqEl.keydown(pFunction);
+    };
+
+    /*
+    * this.keyup():
+    * Shortcut to use this.jqEl.keyup
+    * */
+    this.keyup = function (pFunction) {
+        this.jqEl.keyup(pFunction);
+    };
+
+    /*
+    * this.clear():
+    * Clear the inputScreen
+    * */
+    this.clear = function () {
+        this.jqEl.val(this.defaultContent);
+    };
+
+    /*
+    * this.focus():
+    * Put the focus on the inputScreen
+    * */
+    this.focus = function () {
+        this.jqEl.focus();
     }
 
-    return ('');
-}
-
-/*
- * getAllGivenLines():
- * return an array containg each statement AND each jump line defined in textarea#input in S4M language
- * */
-function getAllGivenLines()
-{
-    let givenStr = getGivenStr();
-    let givenStatements = [];
-
-    if (givenStr) {
-        givenStatements = givenStr.replace(/given:[ ]*\n/mi, '');
-        givenStatements = givenStatements.replace(/\nend/, '');
-        givenStatements = givenStatements.split('\n');
+    /*
+    * this.getInputStr():
+    * Gives the content of the inputScreen in raw str
+    * */
+    this.getInputStr = function () {
+        return this.jqEl.val();
     }
 
-    return givenStatements;
-}
-
-/*
- * getAllGivenStatements():
- * return an array containg each statement defined in textarea#input in S4M language
- * */
-function getAllGivenStatements() {
-    let givenLines = getAllGivenLines();
-
-    return (givenLines.filter((str) => (str != '')));
-}
-
-/*
- * getClassOfLabel(pStatement):
- * return the class of a div.label according to the first char of its content (pStatement)
- * not very clean design, I will probably modify this later
- * */
-function getClassOfLabel(pStatement) {
-    let retClass = '';
-    switch (pStatement[0]) {
-        case '♮':
-            retClass = 'step';
-            break;
-        case undefined:
-            retClass = 'jump_line';
-            break;
-        default:
-            retClass = 'formula';
-    }
-
-    return retClass;
-}
-
-/*
- * displayLabelToOutputScreen(pStr, pType):
- * take the content of a label (pStr) and it's class name (pType), and create the corresponding div
- * to append it in the output screen
- * Note: steps are appended on top and bottom wereas formula and jump_line are appened before the end label
- * */
-function displayLabelToOutputScreen(pStr, pType) {
-    let appened_element = $('<div class="' + pType + '"></div>');
-    
-    appened_element.append($(pStr));
-    appened_element.hide(0);
-
-    if (pType.includes('step')) {
-        $('section#output').append(appened_element);
-    } else {
-        $('section#output div.end_label').before(appened_element);
-    }
-
-    appened_element.animate({width: 'toggle'}, 200);
-}
-
-/*
- * updateScreen():
- * take the content of a label (pStr) and it's class name, and create the corresponding div
- * to append it in the output screen
- * Note: steps are appended on top and bottom wereas formula and jump_line are appened before the end label
- * */
-function updateScreen() {
-
-    let givenLines = getAllGivenStatements()
-    let labelDivsInOutputScreen = $('section#output div.formula');
-    let translater = new Translater(g_dictReplace);
-    
-    /* if there's no given mention, we simply clear the output screen */
-    if (givenLines.length === 0) {
-        labelDivsInOutputScreen.animate({width: 'toggle'}, 200, () => {
-            $('section#output').html('');
-        });
-    } else {
-        /* display " given" and "end" labels */
-        if ($('section#output div.given_label').length == 0) {
-            displayLabelToOutputScreen(translater.S4MToMathML('given:'), 'label step given_label');
-            displayLabelToOutputScreen(translater.S4MToMathML('end', g_dictReplace), 'label step end_label');
+    /*
+    * this.getGivenStr():
+    * Returns the part of #textarea#input that is between given: and end included
+    * */
+    this.getGivenStr = function () {
+        let givenStr = this.getInputStr().match(/given:[ ]*\n(.|\n)*?\nend/gmi)
+        if (givenStr !== null) {
+            return givenStr[0];
         }
+
+        return ('');
+    }
+
+    /*
+    * this.getAllGivenLines():
+    * Returns an array containg each given statement AND jump lines defined in the given block in S4M Language
+    * */
+    this.getAllGivenLines = function () {
+        let givenStr = this.getGivenStr();
+        let givenStatements = [];
+
+        if (givenStr) {
+            givenStatements = givenStr.replace(/given:[ ]*\n/mi, '');
+            givenStatements = givenStatements.replace(/\nend/, '');
+            givenStatements = givenStatements.split('\n');
+        }
+
+        return givenStatements;
+    }
+
+    /*
+    * this.getAllGivenStatements():
+    * Returns an array containg each given statement defined in the given block in S4M Language.
+    * In other words, it returns this.getAllGivenLines() without the '' values
+    * */
+    this.getAllGivenStatements = function () {
+        let givenLines = this.getAllGivenLines();
+
+        return (givenLines.filter((str) => (str != '')));
+    }
+
+    /*
+    * this.getInstructions():
+    * return the instructions in the inputScreen (all that is not in given end block)
+    * */
+    this.getInstructions = function () {
+        let instructions = this.getInputStr().replace(this.getGivenStr(), '').trim();
+
+        return instructions;
+    }
+}
+
+/*******************************************************************************************
+* OutputScreen:
+* Wrapper object that wrap section#output
+* to implement directly all needed features
+* */
+function OutputScreen(pTranslater) {
+    this.jqEl = $('section#output');
+    this.translater = pTranslater;
+
+    /*
+    * this.clear():
+    * erase all the content of the outputScreen
+    * */
+    this.clear = function () {
+        this.jqEl.find('div.label').fadeOut(200, () => {
+            this.jqEl.html('');
+        });
+    };
+
+    /*
+    * this.clearGivenLabels():
+    * erase the given block in the outputScreen
+    * */
+    this.clearGivenLabels = function () {
+       this.getGivenLabels().fadeOut(200);
+    }
+
+    /*
+    * this.getGivenFormulaDivs():
+    * returns the list of all labels containing formula in the given block)
+    * */
+    this.getGivenFormulaDivs = function () {
+        return this.jqEl.find('div.formula');
+    };
+
+    /*
+    * this.getGivenLabels():
+    * returns the list of all labels involved in the given statements
+    * (i.e div [given], div [end] and all formulas between)
+    * */
+    this.getGivenLabels = function () {
+        return  this.jqEl.find('div.formula, div.step');
+    };
+
+
+    /*
+    * this.getEndLabel():
+    * returns the div element containing the End mention of the given block
+    * */
+    this.getEndLabel = function () {
+        return this.jqEl.find('div.end_label');
+    }
+
+    /*
+    * this.displayLabel(pContentStr, pType):
+    * take the content of a label (pContentStr) and it's class name (pType), and create the corresponding div
+    * to append it in the output screen
+    * Note: steps are appended on bottom wereas formulas are appened before the end label
+    * */
+    this.displayLabel = function(pContentStr, pType) {
+        let appened_element = $('<div class="' + pType + '"></div>');
         
-        let count = 1;
-        let tempClass = '';
+        appened_element.append($(pContentStr));
+        appened_element.hide(0);
+
+        if (pType.includes('step')) {
+            this.jqEl.append(appened_element);
+        } else {
+            this.getEndLabel().before(appened_element);
+        }
+
+        appened_element.animate({width: 'toggle'}, 200);
+    }
+
+    this.displayGivenLabel = function() {
+        this.displayLabel(this.translater.S4MLToMathML('given:'), 'label step given_label');
+    };
+
+    this.displayEndLabel = function () {
+        this.displayLabel(this.translater.S4MLToMathML('end'), 'label step end_label');
+    };
+
+    /*
+    * this.displaySolution(pSolutionStr):
+    * take the solution of the calculus (pSolutionStr) and create the corresponding div
+    * to append it in the output screen
+    * */
+    this.displaySolution = function (pSolutionStr) {
+        let solutionEl = $('<div class="label solution">' + pSolutionStr + '</div>').hide(0)
+
+        this.jqEl.find('div.solution').slideUp(200);
+        this.jqEl.prepend(solutionEl);
+        solutionEl.slideDown(200);
+    };
+
+    this.containGivenLabel = function () {
+        let givenLabel = this.jqEl.find('div.given_label');
+
+        return (givenLabel.length !== 0);
+    }
+}
+
+/*******************************************************************************************
+* Controller:
+* Controller object of the application.
+* Manages the synchronization between inputScreen and outputScreen, and the events
+* setting through ClickAndKeyListener object
+* Note: to optimize the execution, the synchronization occurs when there is
+*       a modification of the given bloc in the inputScreen, instead of
+*       launching the synchronization each time there's an UP/DOWN/ENTER/BACKSPACE
+*       key pressed. This is possible by saving the given block value
+*       in this.lastKnownGivenValueInInputScreen to compare it to the
+*       current given block value
+* */
+function Controller(pInputScreen, pOutputScreen, pSolver) {
+
+    this.inputScreen = pInputScreen;
+    this.outputScreen = pOutputScreen;
+    this.solver = pSolver;
+    this.lastKnownGivenValueInInputScreen = this.inputScreen.getGivenStr();
+    this.clickAndKeyListener = new ClickAndKeyListener(this.inputScreen, this.outputScreen);
+
+    /*
+    * this.synchronizeInputScreenAndOutputScreen():
+    * Compare the content of inputScreen and OutputScreen and synchronize the outpuScreen in function
+    * */
+    this.setkeyAndMouseEvents = function () {
+        this.clickAndKeyListener.setkeyAndMouseEvents(this, this.solver);
+    };
+    
+    /*
+    * this.synchronizeInputScreenAndOutputScreen():
+    * Compare the content of inputScreen and OutputScreen and synchronize the outpuScreen in function
+    * */
+    this.synchronizeInputScreenAndOutputScreen = function () {
+        let givenStatements = this.inputScreen.getAllGivenStatements();
+        
+        if (givenStatements.length === 0) {
+            this.outputScreen.clearGivenLabels();
+        } else {
+            if (!this.outputScreen.containGivenLabel()) {
+                this.outputScreen.displayGivenLabel();
+                this.outputScreen.displayEndLabel();
+            }
+
+            this.synchronizeGivenStatements();
+        }
+    };
+
+    /*
+    * this.synchronizeGivenStatements():
+    * compare each given statement in the inputScreen with its corresponding div's content in the outputScreen and
+    * update the div's content in the outputScreen if they differs
+    * */
+    this.synchronizeGivenStatements = function () {
+        let givenStatements = this.inputScreen.getAllGivenStatements();
+        let formulaDivsInOutputScreen = this.outputScreen.getGivenFormulaDivs();
+        let translater = this.outputScreen.translater;
+        let lastStatementId = formulaDivsInOutputScreen.length + 1;
+
         let tempContent = '';
-        for (const givenLineIndex in givenLines) {
-            /* if there is not the corresponding div, we create it  */
-            tempContent = translater.S4MToMathML(givenLines[givenLineIndex]).outerHTML;
-            if (labelDivsInOutputScreen[givenLineIndex] === undefined) {
-                    displayLabelToOutputScreen('<div class="statement_id">(' + (count++) + '):</div>' + tempContent, 'label formula');
+        for (const givenStatementsIndex in givenStatements) {
+            tempContent = translater.S4MLToMathML(givenStatements[givenStatementsIndex]).outerHTML;
+
+            /* if the the corresponding div doesn't exists, we create it and display it */
+            if (formulaDivsInOutputScreen[givenStatementsIndex] === undefined) {
+                this.outputScreen.displayLabel('<div class="statement_id">(' + (lastStatementId++) + '):</div>' + tempContent, 'label formula');
             } else {
-                /* if it exists but it has a different value of the one in input screen*/
-                let math_block = labelDivsInOutputScreen[givenLineIndex].querySelector('.ma-block');
-                
-                if (translater.S4MtoTex(givenLines[givenLineIndex]) !== math_block.getAttribute('alttext')) {
-                    $(labelDivsInOutputScreen[givenLineIndex]).animate({width: 'toggle'}, 200, function () {
-                        $(math_block).remove();
-                        $(labelDivsInOutputScreen[givenLineIndex]).append($(translater.S4MToMathML(givenLines[givenLineIndex]).outerHTML));
-                        $(labelDivsInOutputScreen[givenLineIndex]).animate({width: 'toggle'}, 200);
+                /* if it exists but it has a different content with the corresponding line in input screen, we modify its content */
+                let currentDivEl = $(formulaDivsInOutputScreen[givenStatementsIndex]);
+                let currentMathBlock = currentDivEl.find('.ma-block');
+                if (translater.S4MLtoTex(givenStatements[givenStatementsIndex]) !== currentMathBlock.attr('alttext')) {
+                    let newMathBlock = $(translater.S4MLToMathML(givenStatements[givenStatementsIndex]).outerHTML);
+
+                    currentDivEl.animate({width: 'toggle'}, 200, function () {
+                        $(currentMathBlock).replaceWith(newMathBlock);
+                        currentDivEl.animate({width: 'toggle'}, 200);
                     });
                 }
             }
         }
 
-        /* we eliminate all excedentary divs in the output screen */
-        if (givenLines.length !== labelDivsInOutputScreen.length) {
-            let count = givenLines.length;
-            while (labelDivsInOutputScreen[count] !== undefined) {
-                $(labelDivsInOutputScreen[count]).remove();
-                count++;
-            }
-
+        if (givenStatements.length !== formulaDivsInOutputScreen.length) {
+            this.deleteExcedentaryLabelDivs(givenStatements.length);
         }
+    };
+
+    /*
+    * this.deleteExcedentaryLabelDivs(pLastDivIndex):
+    * delete all label divs in the outputScreen that are in excess,
+    * That is to say if there are 3 given statements in the intputScreen, and 5 divs in the outputscreen,
+    * we will update the content of the 3 firsts divs if they differ from the input statements,
+    * but we will then need to delete the 2 last divs.
+    * That's what this function does.
+    * */
+    this.deleteExcedentaryLabelDivs = function (pLastDivIndex) {
+        let index = pLastDivIndex;
+        let formulaDivsInOutputScreen = this.outputScreen.getGivenFormulaDivs();
+        while (formulaDivsInOutputScreen[index] !== undefined) {
+            $(formulaDivsInOutputScreen[index]).animate({width: 'toggle'}, 200).remove();
+            index++;
+        }
+    };
+
+
+    /*
+    * this.launchSolving():
+    * Launchs the solving
+    * */
+    this.launchSolving = function () {
+        $('button#do_solve').click();
     }
 }
 
+/*******************************************************************************************
+* ClickAndKeyListener:
+* Object that Manages the events definition
+* */
+function ClickAndKeyListener(pInputScreen, pOutputScreen) {
+    this.ENTER_KEY = 13;
+    this.CTRL_KEY = 17;
+    this.UP_KEY = 38;
+    this.DOWN_KEY = 40;
+    this.ESCAPE_KEY = 27;
+    this.BACKSPACE_KEY = 8;
 
-/*
+    this.IsCtrlKeyIsDown = false;
+    this.inputScreen = pInputScreen;
+    this.outputScreen = pOutputScreen;
+    
+    /*
+    * setKeydownEventsToInputScreen(pController):
+    * Definition of what to do when we press keys in the inputScreen.
+    *  .  CTRL + ENTER ==> solve
+    *  .  UP / DOWN / ENTER / BACKSPACE ==> synchronize inputScreen and outputScreen if necessary
+    *  .  ESCAPE ==> erase inputScreen and clear outputScreen
+    * */
+    this.setKeydownEventsToInputScreen = function (pController) {
+        this.inputScreen.keydown((e) => {
+            if (e.which === this.ENTER_KEY && this.IsCtrlKeyIsDown) {
+                pController.launchSolving();
+            }    
+
+            if ((e.which === this.UP_KEY)
+            || (e.which === this.DOWN_KEY)
+            || (e.which === this.BACKSPACE_KEY)
+            || (e.which === this.ENTER_KEY)) {
+                let currentInputScreenContent = this.inputScreen.getGivenStr();
+                if (pController.lastKnownGivenValueInInputScreen !== currentInputScreenContent) {
+                    pController.lastKnownGivenValueInInputScreen = currentInputScreenContent;
+                    pController.synchronizeInputScreenAndOutputScreen();
+                }
+        
+            } else if (e.which === this.ESCAPE_KEY) {
+                this.inputScreen.clear();
+                this.outputScreen.clear();
+            } else if (e.which === this.CTRL_KEY) {
+                this.IsCtrlKeyIsDown = true;
+            }
+        });
+    };
+
+    /*
+    * setKeyupEventsToInputScreen():
+    * Function to manage the this.IsCtrlKeyIsDown attribute to permit
+    * the (CTRL + ENTER ==> solve) feature
+    * */
+    this.setKeyupEventsToInputScreen = function () {
+        this.inputScreen.keyup((e) => {
+            if (e.which === this.CTRL_KEY) {
+                this.IsCtrlKeyIsDown = false;
+            }
+        });
+    };
+
+    /*
+    * setClickSolveButtonEvent(pSolver):
+    * Definition of what to do when we click on the solve button of the GUI.
+    * */
+    this.setClickSolveButtonEvent = function (pSolver) {
+        $('button#do_solve').click(() => {
+            if (this.inputScreen.getInstructions() !== '') {
+                this.outputScreen.displaySolution(this.outputScreen.translater.S4MLToMathML(pSolver.solve()).outerHTML);
+            }
+        });
+    };
+
+    /*
+    * setLooperEvent():
+    * Definition of the loop event so that when we start with the focus on the inputScreen,
+    * when we press tab multiples times, it will alternate between the solve button and the inputScreen.
+    * */
+    this.setLooperEvent = function () {
+        $('button#looper').focus(() => {
+            this.inputScreen.focus();
+        })
+    };
+
+    /*
+    * setkeyAndMouseEvents():
+    * Set all events definitions of the ClickAndKeyListener object
+    * */
+    this.setkeyAndMouseEvents = function (pController, pSolver) {
+        this.setKeydownEventsToInputScreen(pController);
+        this.setKeyupEventsToInputScreen();
+        this.setClickSolveButtonEvent(pSolver);
+        this.setLooperEvent();
+    };
+}
+
+/*******************************************************************************************
+* Solver:
+* Object that manages the solving feature, heart of all this.
+* */
+function Solver() {
+    this.solve = function () {
+        return ('x = {-b + root(b^2 - 4ac)}/{2a}');
+    };
+}
+
+
+
+
+/*******************************************************************************************
  * MAIN
  * */
 $(function () {
-    let outputScreenContent = new OutputScreenContent();
-    $('textarea#input').focus();
-    updateScreen();
-
-    $('textarea#input').keydown((e) => {
-        let currentInputScreenContent = getInputStr();
-        if (e.which === 38
-            || e.which == 40
-            || e.which == 13) {
-                if (outputScreenContent.getValue() !== currentInputScreenContent) {
-                    outputScreenContent.setValue(currentInputScreenContent);
-                    updateScreen();
-                }
-        }
-    });
-
-    $('button#do_solve').click(() => {
-        if ($('textarea#input').val() !== '') {
-            console.log(getInputStr());
-        }
-    });
-
-    $('button#looper').focus(() => {
-        $('textarea#input').focus();
-    })
+    let translater = new Translater(g_dictReplace);
+    let solver = new Solver();
+    let inputScreen = new InputScreen();
+    let outputScreen = new OutputScreen(translater);
+    let controller = new Controller(inputScreen, outputScreen, solver);
+    
+    inputScreen.focus();
+    controller.setkeyAndMouseEvents();
+    controller.synchronizeInputScreenAndOutputScreen();
 });

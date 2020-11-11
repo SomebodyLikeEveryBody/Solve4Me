@@ -113,10 +113,18 @@ div.step
     justify-content: center;
 }
 
-fmath
+div.solution
 {
-    float: center;
+    border: black 1px solid;
+    border-radius: 10px;
+    background-color: lightgreen;
+    padding: 10px;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
 }
+
 
 div.statement_id
 {
