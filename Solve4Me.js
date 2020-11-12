@@ -22,7 +22,7 @@ function Translater(pDictionnary) {
     this.dictionnary = pDictionnary;
 
     /*
-    * textToMathML():
+    * texToMathML():
     * Takes a string in Tex and return a <math> DOM object corresponding to the expression
     * Uses the M.sToMathE() function in jqmath.js
     * */
@@ -463,19 +463,3 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
         this.setLooperEvent();
     };
 }
-
-
-/*******************************************************************************************
- * MAIN
- * */
-$(function () {
-    let translater = new Translater(g_dictReplace);
-    let solver = new Solver();
-    let inputScreen = new InputScreen();
-    let outputScreen = new OutputScreen(translater);
-    let controller = new Controller(inputScreen, outputScreen, solver);
-    
-    inputScreen.focus();
-    controller.setkeyAndMouseEvents();
-    controller.synchronizeInputScreenAndOutputScreen();
-});
