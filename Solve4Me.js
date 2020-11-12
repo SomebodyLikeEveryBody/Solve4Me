@@ -443,7 +443,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
 
             if ((e.which === this.UP_KEY)
             || (e.which === this.DOWN_KEY)
-            || (e.which === this.BACKSPACE_KEY)
+            //|| (e.which === this.BACKSPACE_KEY)
             || (e.which === this.ENTER_KEY)) {
                 let currentInputScreenContent = this.inputScreen.getGivenStr();
                 if (pController.lastKnownGivenValueInInputScreen !== currentInputScreenContent) {
