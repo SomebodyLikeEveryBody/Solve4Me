@@ -290,6 +290,7 @@ function OutputScreen(pTranslater) {
     this.containGivenLabel = function () {
         let givenLabel = this.jqEl.find('div.given_label');
 
+        console.log(givenLabel.length);
         return (givenLabel.length !== 0);
     }
 }
@@ -331,6 +332,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
         
         if (givenStatements.length === 0) {
             this.outputScreen.clearGivenLabels();
+            this.lastKnownGivenValueInInputScreen = '';
         } else {
             if (!this.outputScreen.containGivenLabel()) {
                 this.outputScreen.displayGivenLabel();
@@ -448,6 +450,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
             } else if (e.which === this.ESCAPE_KEY) {
                 this.inputScreen.clear();
                 this.outputScreen.clear();
+                pController.lastKnownGivenValueInInputScreen = this.inputScreen.getGivenStr();
             } else if (e.which === this.CTRL_KEY) {
                 this.IsCtrlKeyIsDown = true;
             }
