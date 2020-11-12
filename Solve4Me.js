@@ -1,4 +1,15 @@
 /******************************************************************************
+ * File name: Solve4Me.js
+ * Manage the vue problematics and solving problematics.
+ * The solving problematic will in the near future be in a specific file
+ * 
+ * requires: ./libs/jqmath/jqmath-etc-0.4.6.min 
+ *           ./libs/jquery/jquery-3.5.1.min
+ *           ./dictReplace.js
+ */
+
+
+/******************************************************************************
 *MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM*
 *MMMMMMMMMMMWKOxdxOXWMMMMMMMWNXKK0OOO00KKXXNWMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM*
 *MMMMMMMMMNk;..''..'l0NXOxl:;,''''''''''''',;cok0NWMMMMMMMMMMMMMMMMMMMMMMMMMMM*
