@@ -125,7 +125,7 @@ function InputScreen() {
 
         if (givenStr) {
             givenStatements = givenStr.replace(/given:[ ]*\n/mi, '');
-            givenStatements = givenStatements.replace(/\nend/, '');
+            givenStatements = givenStatements.replace(/\nend/mi, '');
             givenStatements = givenStatements.split('\n');
         }
 
