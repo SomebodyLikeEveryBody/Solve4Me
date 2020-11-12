@@ -68,7 +68,7 @@ function Translater(pDictionnary) {
     * texToMathML():
     * Takes a string in Tex and return a <(f)math> DOM object (+- with HTML) corresponding to the expression
     * Uses the M() function in jqmath.js
-    * */
+    * */    
     this.texToMathML = function (pInText) {
         let mathEl = M(pInText, true);
         return (mathEl);
