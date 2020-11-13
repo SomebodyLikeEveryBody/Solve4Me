@@ -51,11 +51,14 @@
 * Object that manages the solving feature, heart of all this.
 * */
 function Solver() {
-    this.solve = function () {
-        return ('x = {-b + root(b^2 - 4ac)}/{2a}');
+    this.solve = function (pExpression) {
+        let nd = nerdamer(pExpression).toString();
+
+        console.log(nd);
+        return nd;
+        //return ('x = {-b + root(b^2 - 4ac)}/{2a}');
     };
 }
-
 
 
 
@@ -558,8 +561,9 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     * */
     this.setClickSolveButtonEvent = function (pSolver) {
         $('button#do_solve').click(() => {
-            if (this.inputScreen.getInstructions() !== '') {
-                this.outputScreen.displaySolution(this.outputScreen.translater.S4MLToMathML(pSolver.solve()).outerHTML);
+            let instructions = this.inputScreen.getInstructions();
+            if (instructions !== '') {
+                this.outputScreen.displaySolution(this.outputScreen.translater.S4MLToMathML(pSolver.solve(instructions)).outerHTML);
             }
         });
     };

@@ -64,7 +64,7 @@ div#Solve4Me_app
 div#input_container
 {
     width: 50%;
-    height: calc(100% - 5px);
+    height: 100%;
     margin: 0px;
 }
 
@@ -97,7 +97,7 @@ button#do_solve
 div#output_container
 {
     width: 50%;
-    height: calc(100% - 5px);
+    height: 100%;
     margin: 0px;
 }
 
@@ -155,9 +155,9 @@ div.step
 
 div.solution
 {
-    border: black 1px solid;
+    border: white 3px solid;
     border-radius: 10px;
-    background-color: lightgreen;
+    background-color: rgb(150, 229, 255);
     padding: 10px;
     margin: 10px;
     display: flex;
