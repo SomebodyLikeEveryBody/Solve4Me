@@ -108,7 +108,7 @@ function Translater(pDictionnary) {
 * to implement directly all needed features
 * */
 function InputScreen() {
-    this.defaultContent = 'given:\n\nend';
+    this.defaultContent = 'given:\n\nend\n\n';
     this.jqEl = $('textarea#input');
 
     /*
@@ -133,6 +133,17 @@ function InputScreen() {
     * */
     this.clear = function () {
         this.jqEl.val(this.defaultContent);
+        this.setCursorAfterGivenKW();
+    };
+
+    /*
+    * this.setCursorAfterGivenKW():
+    * Puts the cursor after "given:\n" statements in the inputScreen.
+    * Called when a this.clear() call occurs
+    * */
+    this.setCursorAfterGivenKW = function () {
+        this.jqEl[0].setSelectionRange(7, 7)
+
     };
 
     /*
@@ -486,6 +497,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     this.DOWN_KEY = 40;
     this.ESCAPE_KEY = 27;
     this.BACKSPACE_KEY = 8;
+    this.END_KEY = 35;
 
     this.IsCtrlKeyIsDown = false;
     this.inputScreen = pInputScreen;
@@ -528,6 +540,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
             if ((e.which === this.UP_KEY)
             || (e.which === this.DOWN_KEY)
             || (e.which === this.BACKSPACE_KEY)
+            || (e.which === this.END_KEY)
             || (e.which === this.ENTER_KEY)) {
                 let currentGivenStrInInputScreen = this.inputScreen.getGivenStr();
                 if ((pController.hasCursorLineInInputScreenChanged())
