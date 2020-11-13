@@ -141,7 +141,24 @@ function InputScreen() {
     * */
     this.focus = function () {
         this.jqEl.focus();
-    }
+    };
+
+    /*
+    * this.getCursorLinePosition():
+    * Returns the line number position of the cursor in the inputScreen
+    * */
+    this.getCursorLinePosition = function () {
+        return (this.getInputStr().substr(0, this.getSelectionStart()).split('\n').length);
+    };
+
+    /*
+    * this.getSelectionStart():
+    * Returns the selectionStart value of the <textatrea#input> element.
+    * This will be rewrote in a near future to be up to date ==> <REWRITE>
+    * */
+    this.getSelectionStart = function () {
+        return (this.jqEl.get(0).selectionStart);
+    };
 
     /*
     * this.getInputStr():
@@ -176,6 +193,7 @@ function InputScreen() {
             givenStatements = givenStr.replace(/given:[ ]*\n/mi, '');
             givenStatements = givenStatements.replace(/\nend/mi, '');
             givenStatements = givenStatements.split('\n');
+            givenStatements = givenStatements.map((el) => el.trim());
         }
 
         return givenStatements;
@@ -194,7 +212,7 @@ function InputScreen() {
 
     /*
     * this.getInstructions():
-    * return the instructions in the inputScreen (all that is not in given end block)
+    * Returns the instructions in the inputScreen (all that is not in given end block)
     * */
     this.getInstructions = function () {
         let instructions = this.getInputStr().replace(this.getGivenStr(), '').trim();
@@ -214,7 +232,7 @@ function OutputScreen(pTranslater) {
 
     /*
     * this.clear():
-    * erase all the content of the outputScreen
+    * Erase all the content of the outputScreen
     * */
     this.clear = function () {
         this.jqEl.find('div.label').fadeOut(200, () => {
@@ -224,15 +242,17 @@ function OutputScreen(pTranslater) {
 
     /*
     * this.clearGivenLabels():
-    * erase the given block in the outputScreen
+    * Erase the given block in the outputScreen
     * */
     this.clearGivenLabels = function () {
-       this.getGivenLabels().fadeOut(200);
+       this.getGivenLabels().fadeOut(200, function () {
+           $(this).remove();
+       });
     }
 
     /*
     * this.getGivenFormulaDivs():
-    * returns the list of all labels containing formula in the given block)
+    * Returns the list of all labels containing formula in the given block)
     * */
     this.getGivenFormulaDivs = function () {
         return this.jqEl.find('div.formula');
@@ -240,7 +260,7 @@ function OutputScreen(pTranslater) {
 
     /*
     * this.getGivenLabels():
-    * returns the list of all labels involved in the given statements
+    * Returns the list of all labels involved in the given statements
     * (i.e div [given], div [end] and all formulas between)
     * */
     this.getGivenLabels = function () {
@@ -250,19 +270,19 @@ function OutputScreen(pTranslater) {
 
     /*
     * this.getEndLabel():
-    * returns the div element containing the End mention of the given block
+    * Returns the div element containing the End mention of the given block
     * */
     this.getEndLabel = function () {
         return this.jqEl.find('div.end_label');
     }
 
     /*
-    * this.displayLabel(pContentStr, pType):
-    * take the content of a label (pContentStr) and it's class name (pType), and create the corresponding div
+    * this.createAndisplayLabel(pContentStr, pType):
+    * Takes the content of a label (pContentStr) and it's class name (pType), and create the corresponding div
     * to append it in the output screen
     * Note: steps are appended on bottom wereas formulas are appened before the end label
     * */
-    this.displayLabel = function(pContentStr, pType) {
+    this.createAndisplayLabel = function(pContentStr, pType) {
         let appened_element = $('<div class="' + pType + '"></div>');
         
         appened_element.append($(pContentStr));
@@ -277,12 +297,21 @@ function OutputScreen(pTranslater) {
         appened_element.animate({width: 'toggle'}, 200);
     }
 
-    this.displayGivenLabel = function() {
-        this.displayLabel(this.translater.S4MLToMathML('given:'), 'label step given_label');
+    /*
+    * this.createAndDisplayGivenLabel(pSolutionStr):
+    * Displays in the outputScreen the first "Given" label
+    * */
+    this.createAndDisplayGivenLabel = function() {
+        this.createAndisplayLabel(this.translater.S4MLToMathML('given:'), 'label step given_label');
     };
 
-    this.displayEndLabel = function () {
-        this.displayLabel(this.translater.S4MLToMathML('end'), 'label step end_label');
+    /*
+    * this.createAndDisplayEndLabel():
+    * take the solution of the calculus (pSolutionStr) and create the corresponding div
+    * to append it in the output screen
+    * */
+    this.createAndDisplayEndLabel = function () {
+        this.createAndisplayLabel(this.translater.S4MLToMathML('end'), 'label step end_label');
     };
 
     /*
@@ -298,10 +327,13 @@ function OutputScreen(pTranslater) {
         solutionEl.slideDown(200);
     };
 
+    /*
+    * this.containGivenLabel():
+    * Returns true if the outputScreen contains a <div.given_label>
+    * */
     this.containGivenLabel = function () {
         let givenLabel = this.jqEl.find('div.given_label');
 
-        console.log(givenLabel.length);
         return (givenLabel.length !== 0);
     }
 }
@@ -323,12 +355,34 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
     this.inputScreen = pInputScreen;
     this.outputScreen = pOutputScreen;
     this.solver = pSolver;
-    this.lastKnownGivenValueInInputScreen = this.inputScreen.getGivenStr();
     this.clickAndKeyListener = new ClickAndKeyListener(this.inputScreen, this.outputScreen);
+    this.lastKnownGivenValueInInputScreen = this.inputScreen.getGivenStr();
+    this.lastKnownCursorLinePositionInInputScreen = 1;
 
     /*
-    * this.synchronizeInputScreenAndOutputScreen():
-    * Compare the content of inputScreen and OutputScreen and synchronize the outpuScreen in function
+    * this.hasCursorLineInInputScreenChanged():
+    * Returns true if the cursor position in the inputScreen changed to another line
+    * */
+    this.hasCursorLineInInputScreenChanged = function () {
+        if (this.lastKnownCursorLinePositionInInputScreen !== this.inputScreen.getCursorLinePosition()) {
+            this.updateLastKnownCursorLinePositionInInputScreen();
+            return true;
+        }
+
+        return false;
+    };
+
+    /*
+    * this.updateLastKnownCursorLinePositionInInputScreen():
+    * Modifies this.lastKnownGivenValueInInputScreen attribute with new value
+    * */
+    this.updateLastKnownCursorLinePositionInInputScreen = function () {
+        this.lastKnownCursorLinePositionInInputScreen = this.inputScreen.getCursorLinePosition();
+    };
+
+    /*
+    * this.setkeyAndMouseEvents():
+    * Set all events using the ClickAndKeyListener object
     * */
     this.setkeyAndMouseEvents = function () {
         this.clickAndKeyListener.setkeyAndMouseEvents(this, this.solver);
@@ -336,7 +390,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
     
     /*
     * this.synchronizeInputScreenAndOutputScreen():
-    * Compare the content of inputScreen and OutputScreen and synchronize the outpuScreen in function
+    * Compare the content of inputScreen and OutputScreen and synchronize the outpuScreen according to
     * */
     this.synchronizeInputScreenAndOutputScreen = function () {
         let givenStatements = this.inputScreen.getAllGivenStatements();
@@ -346,8 +400,8 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
             this.lastKnownGivenValueInInputScreen = '';
         } else {
             if (!this.outputScreen.containGivenLabel()) {
-                this.outputScreen.displayGivenLabel();
-                this.outputScreen.displayEndLabel();
+                this.outputScreen.createAndDisplayGivenLabel();
+                this.outputScreen.createAndDisplayEndLabel();
             }
 
             this.synchronizeGivenStatements();
@@ -371,7 +425,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
 
             /* if the the corresponding div doesn't exists, we create it and display it */
             if (formulaDivsInOutputScreen[givenStatementsIndex] === undefined) {
-                this.outputScreen.displayLabel('<div class="statement_id">(' + (lastStatementId++) + '):</div>' + tempContent, 'label formula');
+                this.outputScreen.createAndisplayLabel('<div class="statement_id">(' + (lastStatementId++) + '):</div>' + tempContent, 'label formula');
             } else {
                 /* if it exists but it has a different content with the corresponding line in input screen, we modify its content */
                 let currentDivEl = $(formulaDivsInOutputScreen[givenStatementsIndex]);
@@ -404,7 +458,9 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
         let index = pLastDivIndex;
         let formulaDivsInOutputScreen = this.outputScreen.getGivenFormulaDivs();
         while (formulaDivsInOutputScreen[index] !== undefined) {
-            $(formulaDivsInOutputScreen[index]).animate({width: 'toggle'}, 200).remove();
+            $(formulaDivsInOutputScreen[index]).slideToggle(200, function () {
+                $(this).remove();
+            });
             index++;
         }
     };
@@ -448,17 +504,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
                 pController.launchSolving();
             }    
 
-            if ((e.which === this.UP_KEY)
-            || (e.which === this.DOWN_KEY)
-            //|| (e.which === this.BACKSPACE_KEY)
-            || (e.which === this.ENTER_KEY)) {
-                let currentInputScreenContent = this.inputScreen.getGivenStr();
-                if (pController.lastKnownGivenValueInInputScreen !== currentInputScreenContent) {
-                    pController.lastKnownGivenValueInInputScreen = currentInputScreenContent;
-                    pController.synchronizeInputScreenAndOutputScreen();
-                }
-        
-            } else if (e.which === this.ESCAPE_KEY) {
+            if (e.which === this.ESCAPE_KEY) {
                 this.inputScreen.clear();
                 this.outputScreen.clear();
                 pController.lastKnownGivenValueInInputScreen = this.inputScreen.getGivenStr();
@@ -473,10 +519,22 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     * Function to manage the this.IsCtrlKeyIsDown attribute to permit
     * the (CTRL + ENTER ==> solve) feature
     * */
-    this.setKeyupEventsToInputScreen = function () {
+    this.setKeyupEventsToInputScreen = function (pController) {
         this.inputScreen.keyup((e) => {
             if (e.which === this.CTRL_KEY) {
                 this.IsCtrlKeyIsDown = false;
+            }
+
+            if ((e.which === this.UP_KEY)
+            || (e.which === this.DOWN_KEY)
+            || (e.which === this.BACKSPACE_KEY)
+            || (e.which === this.ENTER_KEY)) {
+                let currentGivenStrInInputScreen = this.inputScreen.getGivenStr();
+                if ((pController.hasCursorLineInInputScreenChanged())
+                    && (pController.lastKnownGivenValueInInputScreen !== currentGivenStrInInputScreen)) {
+                    pController.lastKnownGivenValueInInputScreen = currentGivenStrInInputScreen;
+                    pController.synchronizeInputScreenAndOutputScreen();
+                }
             }
         });
     };
@@ -510,8 +568,8 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     * */
     this.setkeyAndMouseEvents = function (pController, pSolver) {
         this.setKeydownEventsToInputScreen(pController);
-        this.setKeyupEventsToInputScreen();
+        this.setKeyupEventsToInputScreen(pController);
         this.setClickSolveButtonEvent(pSolver);
         this.setLooperEvent();
     };
-    }
+}

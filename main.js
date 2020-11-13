@@ -42,6 +42,7 @@
 ******************************************************************************/
 
 
+
 /*******************************************************************************************
  * MAIN
  * */
@@ -55,4 +56,5 @@ $(function () {
     inputScreen.focus();
     controller.setkeyAndMouseEvents();
     controller.synchronizeInputScreenAndOutputScreen();
+    controller.hasCursorLineInInputScreenChanged();
 });
