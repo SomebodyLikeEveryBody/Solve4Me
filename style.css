@@ -222,7 +222,7 @@ button
     section#output
     {
         width: calc(100% - 22px);
-        height: calc(90% - 40px);
+        height: calc(90% - 35px);
     }
 
     button#looper, button#looper:hover

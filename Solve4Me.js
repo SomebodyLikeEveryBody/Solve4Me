@@ -5,6 +5,11 @@
  * 
  * requires: ./libs/jqmath/jqmath-etc-0.4.6.min 
  *           ./libs/jquery/jquery-3.5.1.min
+ *           ./libs/nerdamer/nerdamer.core.js"></script>
+ *           ./libs/nerdamer/Algebra.js"></script>
+ *           ./libs/nerdamer/Calculus.js"></script>
+ *           ./libs/nerdamer/Solve.js"></script>
+ *           ./libs/nerdamer/Extra.js"></script>
  *           ./dictReplace.js
  */
 
@@ -52,12 +57,24 @@
 * */
 function Solver() {
     this.solve = function (pExpression) {
-        let nd = nerdamer(pExpression).toString();
-
-        console.log(nd);
-        return nd;
+        try {
+            let nd = (nerdamer(pExpression).toString());
+            return nd;
+        } catch (e) {
+            return ('"[' + e.name + ']: ' + e.message + '"');
+        }
+        
         //return ('x = {-b + root(b^2 - 4ac)}/{2a}');
     };
+
+    this.solveInstructions = function (pArrayInstructions) {
+        let retArray = [];
+        for (const instruction of pArrayInstructions) {
+            retArray.push(this.solve(instruction));
+        }
+
+        return (retArray);
+    }
 }
 
 
@@ -335,11 +352,16 @@ function OutputScreen(pTranslater) {
     * */
     this.displaySolution = function (pSolutionStr) {
         let solutionEl = $('<div class="label solution">' + pSolutionStr + '</div>').hide(0)
-
-        this.jqEl.find('div.solution').slideUp(200);
         this.jqEl.prepend(solutionEl);
         solutionEl.slideDown(200);
     };
+
+    this.removeSolutions = function () {
+        this.jqEl.find('div.solution').slideUp(200, function () {
+            $(this).remove();
+        });
+    };
+
 
     /*
     * this.containGivenLabel():
@@ -562,8 +584,12 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     this.setClickSolveButtonEvent = function (pSolver) {
         $('button#do_solve').click(() => {
             let instructions = this.inputScreen.getInstructions();
+            this.outputScreen.removeSolutions();
             if (instructions !== '') {
-                this.outputScreen.displaySolution(this.outputScreen.translater.S4MLToMathML(pSolver.solve(instructions)).outerHTML);
+                let answersArray = pSolver.solveInstructions(instructions.split('\n'));
+                for(const answer of answersArray) {
+                    this.outputScreen.displaySolution(this.outputScreen.translater.texToMathML(answer).outerHTML);
+                }
             }
         });
     };
