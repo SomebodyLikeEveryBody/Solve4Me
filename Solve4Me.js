@@ -10,7 +10,6 @@
  *           ./libs/nerdamer/Calculus.js"></script>
  *           ./libs/nerdamer/Solve.js"></script>
  *           ./libs/nerdamer/Extra.js"></script>
- *           ./dictReplace.js
  */
 
 
@@ -58,13 +57,12 @@
 function Solver() {
     this.solve = function (pExpression) {
         try {
-            let nd = (nerdamer(pExpression).toString());
+            let nd = this.properNerdamer((nerdamer(pExpression).toString()));
             return nd;
         } catch (e) {
-            return ('"[' + e.name + ']: ' + e.message + '"');
-        }
-        
-        //return ('x = {-b + root(b^2 - 4ac)}/{2a}');
+            console.log(e)
+            return ('"[' + e.name + ']: ' + String.raw( { raw: e.message } ) + '"');
+        }        
     };
 
     this.solveInstructions = function (pArrayInstructions) {
@@ -74,7 +72,11 @@ function Solver() {
         }
 
         return (retArray);
-    }
+    };
+
+    this.properNerdamer = function (pInText) {
+        return pInText;
+    };
 }
 
 
@@ -86,8 +88,10 @@ function Solver() {
 * S4ML to Tex language is based on the pDictionnary passed as argument, a simple
 * javascript object containing all Regex correspondance between S4ML patterns and Tex Patterns
 * */
-function Translater(pDictionnary) {
-    this.dictionnary = pDictionnary;
+function Translater(pDictS4MLToTex, pDictS4MLToNerdamer, pDictLatexToTex) {
+    this.dictS4MLToTex = pDictS4MLToTex;
+    this.dictS4MLToNerdamer = pDictS4MLToNerdamer;
+    this.dictLatexToTex = pDictLatexToTex;
 
     /*
     * texToMathML():
@@ -101,13 +105,13 @@ function Translater(pDictionnary) {
 
     /*
     * S4MtoTex():
-    * Takes a string in S4M Language and return a Tex string according to pDictTranslate correspondances
+    * Takes a string in S4M Language and return a Tex string according to this.dictS4MLToTex correspondances
     * */
     this.S4MLtoTex = function (pInText) {
         let outText = pInText;
 
-        for (const key in this.dictionnary) {
-            outText = outText.replace(new RegExp(key, 'g'), this.dictionnary[key]);
+        for (const key in this.dictS4MLToTex) {
+            outText = outText.replace(new RegExp(String.raw( { raw: key }), 'g'), this.dictS4MLToTex[key]);
         }
     
         return (outText);
@@ -119,6 +123,30 @@ function Translater(pDictionnary) {
     * */
     this.S4MLToMathML = function (pInText) {
         return this.texToMathML(this.S4MLtoTex(pInText));
+    };
+
+    /*
+    * S4MLToNerdamer():
+    * Takes a string in S4M Language and returns it in nerdamer language according to this.dictS4MLToNerdamer correspondances
+    * */
+    this.S4MLToNerdamer = function (pInText) {
+        let outText = pInText;
+
+        for (const key in this.dictS4MLToNerdamer) {
+            outText = outText.replace(new RegExp(String.raw( { raw: key } ), 'g'), this.dictS4MLToNerdamer[key]);
+        }
+    
+        return (outText);
+    };
+
+    this.latexToTex = function(pInText) {
+        let outText = pInText;
+
+        for (const key in this.dictLatexToTex) {
+            outText = outText.replace(new RegExp(String.raw( { raw: key }), 'g'), this.dictLatexToTex[key]);
+        }
+    
+        return (outText);
     };
 }
 
@@ -262,27 +290,34 @@ function OutputScreen(pTranslater) {
     this.translater = pTranslater;
 
     /*
-    * this.clear():
+    * OutputScreen.clear():
     * Erase all the content of the outputScreen
     * */
     this.clear = function () {
-        this.jqEl.find('div.label').fadeOut(200, () => {
-            this.jqEl.html('');
-        });
+        this.clearGivenLabels();
+        this.clearSolutionsLabels();
     };
 
     /*
-    * this.clearGivenLabels():
+    * OutputScreen.clearGivenLabels():
     * Erase the given block in the outputScreen
     * */
     this.clearGivenLabels = function () {
-       this.getGivenLabels().fadeOut(200, function () {
-           $(this).remove();
-       });
+        let givenLabels = this.getGivenLabels();
+        givenLabels.fadeOut(200, function () {
+            givenLabels.remove();
+        });
+    }
+
+    this.clearSolutionsLabels = function () {
+        let solutionLabels = this.jqEl.find('div.solution');
+        solutionLabels.fadeOut(200, function () {
+            solutionLabels.remove();
+        });
     }
 
     /*
-    * this.getGivenFormulaDivs():
+    * OutputScreen.getGivenFormulaDivs():
     * Returns the list of all labels containing formula in the given block)
     * */
     this.getGivenFormulaDivs = function () {
@@ -290,7 +325,7 @@ function OutputScreen(pTranslater) {
     };
 
     /*
-    * this.getGivenLabels():
+    * OutputScreen.getGivenLabels():
     * Returns the list of all labels involved in the given statements
     * (i.e div [given], div [end] and all formulas between)
     * */
@@ -300,7 +335,7 @@ function OutputScreen(pTranslater) {
 
 
     /*
-    * this.getEndLabel():
+    * OutputScreen.getEndLabel():
     * Returns the div element containing the End mention of the given block
     * */
     this.getEndLabel = function () {
@@ -308,7 +343,7 @@ function OutputScreen(pTranslater) {
     }
 
     /*
-    * this.createAndisplayLabel(pContentStr, pType):
+    * OutputScreen.createAndisplayLabel(pContentStr, pType):
     * Takes the content of a label (pContentStr) and it's class name (pType), and create the corresponding div
     * to append it in the output screen
     * Note: steps are appended on bottom wereas formulas are appened before the end label
@@ -329,7 +364,7 @@ function OutputScreen(pTranslater) {
     }
 
     /*
-    * this.createAndDisplayGivenLabel(pSolutionStr):
+    * thOutputScreenis.createAndDisplayGivenLabel(pSolutionStr):
     * Displays in the outputScreen the first "Given" label
     * */
     this.createAndDisplayGivenLabel = function() {
@@ -337,7 +372,7 @@ function OutputScreen(pTranslater) {
     };
 
     /*
-    * this.createAndDisplayEndLabel():
+    * OutputScreen.createAndDisplayEndLabel():
     * take the solution of the calculus (pSolutionStr) and create the corresponding div
     * to append it in the output screen
     * */
@@ -346,14 +381,34 @@ function OutputScreen(pTranslater) {
     };
 
     /*
-    * this.displaySolution(pSolutionStr):
+    * OutputScreen.displaySolution(pSolutionStr):
     * take the solution of the calculus (pSolutionStr) and create the corresponding div
     * to append it in the output screen
     * */
     this.displaySolution = function (pSolutionStr) {
         let solutionEl = $('<div class="label solution">' + pSolutionStr + '</div>').hide(0)
-        this.jqEl.prepend(solutionEl);
+
+        this.jqEl.find('div#solutions_container').find('hr').before(solutionEl);
         solutionEl.slideDown(200);
+    };
+
+    this.displaySolutions = function (pAnwsersArray) {
+        let tempLatexAnswer = '';
+        let tempTexAnswer = '';
+        for(const answer of pAnwsersArray) {
+            try {
+                tempLatexAnswer = nerdamer.convertToLaTeX(answer);
+            } catch (e) {
+                tempLatexAnswer = '"[' + e.name + ']: ' + String.raw({ raw: e.message }) + '"';
+                console.log(e)
+            }
+            
+            tempTexAnswer = this.translater.latexToTex(tempLatexAnswer);
+
+            console.log(tempLatexAnswer)
+            console.log(tempTexAnswer);
+            this.displaySolution(this.translater.texToMathML(tempTexAnswer).outerHTML);
+        }
     };
 
     this.removeSolutions = function () {
@@ -583,13 +638,14 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     * */
     this.setClickSolveButtonEvent = function (pSolver) {
         $('button#do_solve').click(() => {
-            let instructions = this.inputScreen.getInstructions();
+            let S4MLInstructions = this.inputScreen.getInstructions();
             this.outputScreen.removeSolutions();
-            if (instructions !== '') {
-                let answersArray = pSolver.solveInstructions(instructions.split('\n'));
-                for(const answer of answersArray) {
-                    this.outputScreen.displaySolution(this.outputScreen.translater.texToMathML(answer).outerHTML);
-                }
+            if (S4MLInstructions !== '') {
+                S4MLInstructions = S4MLInstructions.split('\n');
+
+                let nerdamerInstructions = S4MLInstructions.map((S4MLInstruction) => this.outputScreen.translater.S4MLToNerdamer(S4MLInstruction));
+                let answersArray = pSolver.solveInstructions(nerdamerInstructions);
+                this.outputScreen.displaySolutions(answersArray);
             }
         });
     };

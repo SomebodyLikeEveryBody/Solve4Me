@@ -47,13 +47,14 @@
  * MAIN
  * */
 $(function () {
-    let translater = new Translater(g_dictReplace);
+    let translater = new Translater(g_dictS4MLToTex, g_dictS4MLToNerdamer, g_dictLatexToTex);
     let solver = new Solver();
     let inputScreen = new InputScreen();
     let outputScreen = new OutputScreen(translater);
     let controller = new Controller(inputScreen, outputScreen, solver);
     
     inputScreen.focus();
+    outputScreen.clear();
     controller.setkeyAndMouseEvents();
     controller.synchronizeInputScreenAndOutputScreen();
     controller.hasCursorLineInInputScreenChanged();

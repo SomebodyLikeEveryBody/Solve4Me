@@ -120,7 +120,6 @@ section#output
     border-radius: 10px;
     opacity: 0.6;
     padding: 10px;
-    padding-top: 25px;
     overflow: auto;
     font-size: 1.5em;
     display: block;
@@ -153,6 +152,22 @@ div.step
     justify-content: center;
 }
 
+div#solutions_container
+{
+    margin: 0px;
+    padding: 0px;
+    background-color: transparent;
+}
+
+div#solutions_container hr
+{
+    width: calc(100% - 20px);
+    border-top: white 2px solid;
+    border-bottom: none;
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
 div.solution
 {
     border: white 3px solid;
@@ -162,7 +177,6 @@ div.solution
     margin: 10px;
     display: flex;
     justify-content: center;
-    margin-bottom: 50px;
 }
 
 
