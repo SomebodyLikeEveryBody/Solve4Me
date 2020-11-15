@@ -111,7 +111,7 @@ function Translater(pDictS4MLToTex, pDictS4MLToNerdamer, pDictLatexToTex) {
         let outText = pInText;
 
         for (const key in this.dictS4MLToTex) {
-            outText = outText.replace(new RegExp(String.raw( { raw: key }), 'g'), this.dictS4MLToTex[key]);
+            outText = outText.replace(new RegExp(String.raw( { raw: key }), 'g'), String.raw( { raw: this.dictS4MLToTex[key] }));
         }
     
         return (outText);
@@ -133,7 +133,7 @@ function Translater(pDictS4MLToTex, pDictS4MLToNerdamer, pDictLatexToTex) {
         let outText = pInText;
 
         for (const key in this.dictS4MLToNerdamer) {
-            outText = outText.replace(new RegExp(String.raw( { raw: key } ), 'g'), this.dictS4MLToNerdamer[key]);
+            outText = outText.replace(new RegExp(String.raw( { raw: key } ), 'g'), String.raw( { raw: this.dictS4MLToNerdamer[key] }));
         }
     
         return (outText);
@@ -143,7 +143,7 @@ function Translater(pDictS4MLToTex, pDictS4MLToNerdamer, pDictLatexToTex) {
         let outText = pInText;
 
         for (const key in this.dictLatexToTex) {
-            outText = outText.replace(new RegExp(String.raw( { raw: key }), 'g'), this.dictLatexToTex[key]);
+            outText = outText.replace(new RegExp(String.raw( { raw: key }), 'g'), String.raw( { raw: this.dictLatexToTex[key] }));
         }
     
         return (outText);

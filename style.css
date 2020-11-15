@@ -114,7 +114,7 @@ button#looper, button#looper:hover
 section#output
 {
     width: calc(100% - 22px);
-    height: calc(95% - 31px);
+    height: calc(95% - 18px);
     background-color: rgb(107, 167, 187);
     border: black 1px solid;
     border-radius: 10px;
@@ -236,7 +236,7 @@ button
     section#output
     {
         width: calc(100% - 22px);
-        height: calc(90% - 35px);
+        height: calc(90% - 21px);
     }
 
     button#looper, button#looper:hover
