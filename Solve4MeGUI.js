@@ -406,7 +406,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
     this.lastKnownCursorLinePositionInInputScreen = 1;
 
     /*
-    * this.hasCursorLineInInputScreenChanged():
+    * Controller.hasCursorLineInInputScreenChanged():
     * Returns true if the cursor position in the inputScreen changed to another line
     * */
     this.hasCursorLineInInputScreenChanged = function () {
@@ -419,7 +419,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
     };
 
     /*
-    * this.updateLastKnownCursorLinePositionInInputScreen():
+    * Controller.updateLastKnownCursorLinePositionInInputScreen():
     * Modifies this.lastKnownGivenValueInInputScreen attribute with new value
     * */
     this.updateLastKnownCursorLinePositionInInputScreen = function () {
@@ -427,7 +427,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
     };
 
     /*
-    * this.setkeyAndMouseEvents():
+    * Controller.setkeyAndMouseEvents():
     * Set all events using the ClickAndKeyListener object
     * */
     this.setkeyAndMouseEvents = function () {
@@ -435,7 +435,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
     };
     
     /*
-    * this.synchronizeInputScreenAndOutputScreen():
+    * Controller.synchronizeInputScreenAndOutputScreen():
     * Compare the content of inputScreen and OutputScreen and synchronize the outpuScreen according to
     * */
     this.synchronizeInputScreenAndOutputScreen = function () {
@@ -455,7 +455,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
     };
 
     /*
-    * this.synchronizeGivenStatements():
+    * Controller.synchronizeGivenStatements():
     * compare each given statement in the inputScreen with its corresponding div's content in the outputScreen and
     * update the div's content in the outputScreen if they differs
     * */
@@ -493,7 +493,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
     };
 
     /*
-    * this.deleteExcedentaryLabelDivs(pLastDivIndex):
+    * Controller.deleteExcedentaryLabelDivs(pLastDivIndex):
     * delete all label divs in the outputScreen that are in excess,
     * That is to say if there are 3 given statements in the intputScreen, and 5 divs in the outputscreen,
     * we will update the content of the 3 firsts divs if they differ from the input statements,
@@ -513,7 +513,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
 
 
     /*
-    * this.launchSolving():
+    * Controller.launchSolving():
     * Launchs the solving
     * */
     this.launchSolving = function () {
@@ -539,7 +539,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     this.outputScreen = pOutputScreen;
     
     /*
-    * setKeydownEventsToInputScreen(pController):
+    * ClickAndKeyListener.setKeydownEventsToInputScreen(pController):
     * Definition of what to do when we press keys in the inputScreen.
     *  .  CTRL + ENTER ==> solve
     *  .  UP / DOWN / ENTER / BACKSPACE ==> synchronize inputScreen and outputScreen if necessary
@@ -562,7 +562,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     };
 
     /*
-    * setKeyupEventsToInputScreen():
+    * ClickAndKeyListener.setKeyupEventsToInputScreen():
     * Function to manage the this.IsCtrlKeyIsDown attribute to permit
     * the (CTRL + ENTER ==> solve) feature
     * */
@@ -588,7 +588,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     };
 
     /*
-    * setClickSolveButtonEvent(pSolver):
+    * ClickAndKeyListener.setClickSolveButtonEvent(pSolver):
     * Definition of what to do when we click on the solve button of the GUI.
     * */
     this.setClickSolveButtonEvent = function (pSolver) {
@@ -609,7 +609,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     };
 
     /*
-    * setLooperEvent():
+    * ClickAndKeyListener.setLooperEvent():
     * Definition of the loop event so that when we start with the focus on the inputScreen,
     * when we press tab multiples times, it will alternate between the solve button and the inputScreen.
     * */
@@ -620,7 +620,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     };
 
     /*
-    * setkeyAndMouseEvents():
+    * ClickAndKeyListener.setkeyAndMouseEvents():
     * Set all events definitions of the ClickAndKeyListener object
     * */
     this.setkeyAndMouseEvents = function (pController, pSolver) {
@@ -629,4 +629,4 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
         this.setClickSolveButtonEvent(pSolver);
         this.setLooperEvent();
     };
-}   
+}
