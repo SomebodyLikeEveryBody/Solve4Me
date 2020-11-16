@@ -140,10 +140,12 @@ function Translater(pDictS4MLToTex, pDictS4MLToNerdamer, pDictLatexToTex) {
     };
 
     this.latexToTex = function(pInText) {
-        let outText = pInText;
+        let outText = pInText.replace(/\\/, '[*BCKSLSH*]');
 
-        for (const key in this.dictLatexToTex) {
-            outText = outText.replace(new RegExp(String.raw( { raw: key }), 'g'), String.raw( { raw: this.dictLatexToTex[key] }));
+        for (const index in this.dictLatexToTex) {
+            //outText = outText.replace(new RegExp(String.raw( { raw: key }), 'g'), String.raw( { raw: this.dictLatexToTex[key] }));
+            
+            outText = outText.replace(new RegExp(this.dictLatexToTex[index].LatexCorrespondance, 'g'), this.dictLatexToTex[index].TexCorrespondance);
         }
     
         return (outText);
