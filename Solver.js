@@ -1,8 +1,15 @@
 /******************************************************************************
- * File name: main.js
- * Launches all features in index.htm
+ * File name: Solver.js
+ * Manage the vue problematics and solving problematics.
+ * The solving problematic will in the near future be in a specific file
  * 
- * requires: ./Solve4Me.js
+ * requires: ./libs/jqmath/jqmath-etc-0.4.6.min 
+ *           ./libs/jquery/jquery-3.5.1.min
+ *           ./libs/nerdamer/nerdamer.core.js"></script>
+ *           ./libs/nerdamer/Algebra.js"></script>
+ *           ./libs/nerdamer/Calculus.js"></script>
+ *           ./libs/nerdamer/Solve.js"></script>
+ *           ./libs/nerdamer/Extra.js"></script>
  */
 
 
@@ -44,18 +51,35 @@
 
 
 /*******************************************************************************************
- * MAIN
- * */
-$(function () {
-    let translater = new Translater((new DictS4MLToTex()).value, (new DictS4MLToNerdamer()).value, (new DictLatexToTex()).value);
-    let solver = new Solver();
-    let inputScreen = new InputScreen();
-    let outputScreen = new OutputScreen(translater);
-    let controller = new Controller(inputScreen, outputScreen, solver);
-    
-    inputScreen.focus();
-    outputScreen.clear();
-    controller.setkeyAndMouseEvents();
-    controller.synchronizeInputScreenAndOutputScreen();
-    controller.hasCursorLineInInputScreenChanged();
-});
+* Solver:
+* Object that manages the solving feature, heart of all this.
+* */
+function Solver() {
+    this.solveInstruction = function (pExpression) {
+        let retAnswer = '';
+        
+        try {
+            
+            retAnswer = this.properNerdamer((nerdamer(pExpression).toString()));
+        } catch (e) {
+            console.log(e);
+
+            retAnswer = '"[' + e.name + ']: ' + e.message + '"';
+        }
+
+        return retAnswer;
+    };
+
+    this.solveInstructions = function (pArrayInstructions) {
+        let retArray = [];
+        for (const instruction of pArrayInstructions) {
+            retArray.push(this.solveInstruction(instruction));
+        }
+
+        return (retArray);
+    };
+
+    this.properNerdamer = function (pInText) {
+        return pInText;
+    };
+}
