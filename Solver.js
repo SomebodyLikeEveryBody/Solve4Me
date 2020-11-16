@@ -3,8 +3,7 @@
  * Manage the vue problematics and solving problematics.
  * The solving problematic will in the near future be in a specific file
  * 
- * requires: ./libs/jqmath/jqmath-etc-0.4.6.min 
- *           ./libs/jquery/jquery-3.5.1.min
+ * requires: ./libs/nerdamer/nerdamer.core.js"></script>
  *           ./libs/nerdamer/nerdamer.core.js"></script>
  *           ./libs/nerdamer/Algebra.js"></script>
  *           ./libs/nerdamer/Calculus.js"></script>
@@ -55,27 +54,78 @@
 * Object that manages the solving feature, heart of all this.
 * */
 function Solver() {
+    this.NerdamerCore = nerdamer.getCore();
+    this.nerdamerParser = this.NerdamerCore.PARSER;
+
     this.solveInstruction = function (pExpression) {
         let retAnswer = '';
-        
+        let tempEvaluation = '';
+        let tempResult = '';
+
         try {
             
-            retAnswer = nerdamer(pExpression).toString();
-        } catch (e) {
-            console.log(e);
+            tempResult = nerdamer(pExpression);
+            retAnswer = tempResult.toString();
+            tempEvaluation = tempResult.evaluate().toString();
 
+            if (retAnswer !== tempEvaluation) {
+                retAnswer += ' = ' + tempEvaluation;
+            }
+        } catch (e) {
             retAnswer = '"[' + e.name + ']: ' + e.message + '"';
+            console.log(e);
         }
 
         return retAnswer;
     };
 
-    this.solveInstructions = function (pArrayInstructions) {
+    this.setGivenVars = function (pArrayGivenStatements) {
+        let tempVarDef = '';
+        for (givenStatement of pArrayGivenStatements) {
+            if (givenStatement.includes('=')) {
+                tempVarDef = givenStatement.split('=');
+                tempVarDef = tempVarDef.map((el) => el.trim());
+
+                console.log(tempVarDef);
+                nerdamer.setVar(tempVarDef[0], tempVarDef[1]);
+            }
+        }
+    }
+
+    this.clearVars = function () {
+        nerdamer.clearVars();
+    }
+
+    this.setDefaultVars = function () {
+        nerdamer.setVar('uPression', 'kg * (m^-1) * (s^-2)');
+        nerdamer.setVar('uPoiseuille', 'kg * (m^-1) * (s^-1)');
+    }
+
+    this.solveInstructions = function (pArrayGivenStatements, pArrayInstructions) {
         let retArray = [];
+
+        this.clearVars();
+        this.setDefaultVars();
+        this.setGivenVars(pArrayGivenStatements);
+        
         for (const instruction of pArrayInstructions) {
             retArray.push(this.solveInstruction(instruction));
         }
 
         return (retArray);
     };
+
+    nerdamer.setFunction('doubler', ['a', 'b'], 'a + b')
+
+    // this.addFunctionToNerdamer = function (pFunctionName, pNbArgs, pFunctionPtr, pHandlerFuncPtr) {
+    //     this.NerdamerCore.Math2[pFunctionName] = pFunctionPtr;
+    //     this.nerdamerParser.functions.doubler = [pHandlerFuncPtr,pNbArgs];
+    // };
+
+    // this.addFunctionToNerdamer('doubler', 2, function (a, b) {
+    //     return (a + b);
+    // }, function (a, b) {
+    //     let A = this.nerdamerParser.add(a.clone(), b.clone())
+    //     return A;
+    // });
 }
