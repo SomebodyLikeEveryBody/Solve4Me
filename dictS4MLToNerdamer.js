@@ -1,6 +1,6 @@
 /******************************************************************************
  * File name: dictS4MLToNerdamer.js
- * Define the correspondance between S4M Language and Tex
+ * Define the correspondance between S4M Language and Nerdamer Language
  * 
  * requires: None
  */

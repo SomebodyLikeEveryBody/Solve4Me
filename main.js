@@ -2,7 +2,8 @@
  * File name: main.js
  * Launches all features in index.htm
  * 
- * requires: ./Solve4Me.js
+ * requires: ./Solve4MeGUI.js
+ *           ./Solver.js
  */
 
 

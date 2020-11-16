@@ -362,7 +362,7 @@ function OutputScreen(pTranslater) {
                 console.log(e)
             }
             
-            tempTexAnswer = this.translater.LaTeXToTex(tempLatexAnswer);
+            tempTexAnswer = this.translater.LaTeXToTex(this.translater.LaTexToProperLatexExpression(tempLatexAnswer));
             tempInstruction = this.translater.S4MLtoTex(pInstructionsArray[responseIndex]);
 
             console.log('resultat LaTeX -->' + tempLatexAnswer);

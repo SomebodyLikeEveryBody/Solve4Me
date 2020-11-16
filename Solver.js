@@ -60,7 +60,7 @@ function Solver() {
         
         try {
             
-            retAnswer = this.properNerdamer((nerdamer(pExpression).toString()));
+            retAnswer = nerdamer(pExpression).toString();
         } catch (e) {
             console.log(e);
 
@@ -77,9 +77,5 @@ function Solver() {
         }
 
         return (retArray);
-    };
-
-    this.properNerdamer = function (pInText) {
-        return pInText;
     };
 }
