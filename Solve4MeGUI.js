@@ -401,13 +401,14 @@ function OutputScreen(pTranslater) {
         let tempTexAnswer = '';
         let tempInstruction = '';
         for(const responseIndex in pAnswersArray) {
-            try {
-                tempLatexAnswer = nerdamer.convertToLaTeX(pAnswersArray[responseIndex]);
-            } catch (e) {
-                tempLatexAnswer = '"[' + e.name + ']: ' + e.message + '"';
-                console.log(e)
-            }
+            // try {
+            //     tempLatexAnswer = nerdamer.convertToLaTeX(pAnswersArray[responseIndex]);
+            // } catch (e) {
+            //     tempLatexAnswer = '"[' + e.name + ']: ' + e.message + '"';
+            //     console.log(e)
+            // }
             
+            tempLatexAnswer = pAnswersArray[responseIndex];
             tempTexAnswer = this.translater.LaTeXToTex(this.translater.LaTexToProperLatexExpression(tempLatexAnswer));
             tempInstruction = this.translater.S4MLtoTex(pInstructionsArray[responseIndex]);
 

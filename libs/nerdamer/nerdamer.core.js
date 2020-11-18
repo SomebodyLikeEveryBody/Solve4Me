@@ -6895,7 +6895,7 @@ var nerdamer = (function (imports) {
 
                         TeX.push(f);
                     }
-                    else
+                    else    
                         TeX.push(LaTeX.latex(e));
                 }
                 else if (isArray(e)) {

@@ -60,16 +60,23 @@ function Solver() {
     this.solveInstruction = function (pExpression) {
         let retAnswer = '';
         let tempEvaluation = '';
+        let tempDecimals = '';
         let tempResult = '';
 
         try {
-            
-            tempResult = nerdamer(pExpression);
-            retAnswer = tempResult.toString();
-            tempEvaluation = tempResult.evaluate().toString();
+            tempResult = nerdamer(pExpression).toString()
+            tempEvaluation = nerdamer(tempResult).evaluate().toString();
+            tempDecimals = nerdamer(tempEvaluation).text('decimals');
 
-            if (retAnswer !== tempEvaluation) {
-                retAnswer += ' = ' + tempEvaluation;
+            if (tempResult !== pExpression) {
+                retAnswer = nerdamer.convertToLaTeX(tempResult);
+            }
+            if (tempResult !== tempEvaluation) {
+                retAnswer += nerdamer.convertToLaTeX(' = ' + tempEvaluation);
+            }
+
+            if (tempEvaluation !== tempDecimals) {
+                retAnswer += ' = ' + tempDecimals.replace(/\*/g, '\.');
             }
         } catch (e) {
             retAnswer = '"[' + e.name + ']: ' + e.message + '"';
@@ -97,7 +104,7 @@ function Solver() {
     }
 
     this.setDefaultVars = function () {
-        nerdamer.setVar('uPression', 'kg * (m^-1) * (s^-2)');
+        nerdamer.setVar('uPa', 'kg * (m^-1) * (s^-2)');
         nerdamer.setVar('uPoiseuille', 'kg * (m^-1) * (s^-1)');
     }
 
