@@ -58,7 +58,7 @@ function Solver() {
     this.nerdamerParser = this.NerdamerCore.PARSER;
 
     this.solveInstruction = function (pExpression) {
-        let retAnswer = '';
+        let retAnswer = 'pouet';
         let tempEvaluation = '';
         let tempDecimals = '';
         let tempResult = '';
@@ -68,7 +68,11 @@ function Solver() {
             tempEvaluation = nerdamer(tempResult).evaluate().toString();
             tempDecimals = nerdamer(tempEvaluation).text('decimals');
 
-            if (tempResult !== pExpression) {
+            /*
+             * BUG Here, cos( 75 * pi / 180) induce bug
+             */
+            if ((tempResult != pExpression) 
+                || (tempResult === tempEvaluation && tempResult === tempDecimals)) {
                 retAnswer = nerdamer.convertToLaTeX(tempResult);
             }
             if (tempResult !== tempEvaluation) {
@@ -78,6 +82,8 @@ function Solver() {
             if (tempEvaluation !== tempDecimals) {
                 retAnswer += ' = ' + tempDecimals.replace(/\*/g, '\.');
             }
+
+            console.log(retAnswer)
         } catch (e) {
             retAnswer = '"[' + e.name + ']: ' + e.message + '"';
             console.log(e);
