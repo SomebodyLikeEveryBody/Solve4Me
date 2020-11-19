@@ -58,7 +58,7 @@ function Solver() {
     this.nerdamerParser = this.NerdamerCore.PARSER;
 
     this.solveInstruction = function (pExpression) {
-        let retAnswer = 'pouet';
+        let retAnswer = '';
         let tempEvaluation = '';
         let tempDecimals = '';
         let tempResult = '';
@@ -73,14 +73,14 @@ function Solver() {
              */
             if ((tempResult != pExpression) 
                 || (tempResult === tempEvaluation && tempResult === tempDecimals)) {
-                retAnswer = nerdamer.convertToLaTeX(tempResult);
+                retAnswer += ' = ' + nerdamer.convertToLaTeX(tempResult) + ';';
             }
             if (tempResult !== tempEvaluation) {
-                retAnswer += nerdamer.convertToLaTeX(' = ' + tempEvaluation);
+                retAnswer += nerdamer.convertToLaTeX(' = ' + tempEvaluation) + ';';
             }
 
             if (tempEvaluation !== tempDecimals) {
-                retAnswer += ' = ' + tempDecimals.replace(/\*/g, '\.');
+                retAnswer += ' = ' + tempDecimals.replace(/\*/g, '\.') + ';';
             }
 
             console.log(retAnswer)

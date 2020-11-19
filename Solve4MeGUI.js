@@ -400,14 +400,7 @@ function OutputScreen(pTranslater) {
         let tempLatexAnswer = '';
         let tempTexAnswer = '';
         let tempInstruction = '';
-        for(const responseIndex in pAnswersArray) {
-            // try {
-            //     tempLatexAnswer = nerdamer.convertToLaTeX(pAnswersArray[responseIndex]);
-            // } catch (e) {
-            //     tempLatexAnswer = '"[' + e.name + ']: ' + e.message + '"';
-            //     console.log(e)
-            // }
-            
+        for(const responseIndex in pAnswersArray) {        
             tempLatexAnswer = pAnswersArray[responseIndex];
             tempTexAnswer = this.translater.LaTeXToTex(this.translater.LaTexToProperLatexExpression(tempLatexAnswer));
             tempInstruction = this.translater.S4MLtoTex(pInstructionsArray[responseIndex]);
@@ -415,7 +408,7 @@ function OutputScreen(pTranslater) {
             console.log('resultat LaTeX -->' + tempLatexAnswer);
             console.log('resultat TeX -->' + tempTexAnswer);
 
-            this.displaySolution(this.translater.texToMathML(tempInstruction + ' = ' + tempTexAnswer).outerHTML);
+            this.displaySolution(this.translater.texToMathML('\\table ' + tempInstruction + tempTexAnswer).outerHTML);
         }
     };
 

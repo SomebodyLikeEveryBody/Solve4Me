@@ -88,6 +88,7 @@ function DictLatexToTex() {
         '\\[\\*BCKSLSH\\*\\]mathrm\\{(.+?)\\}': '\\$1',
         '\\[\\*BCKSLSH\\*\\]pi': 'π',
         '\\[\\*BCKSLSH\\*\\]infty': '∞',
+        '\\[\\*BCKSLSH\\*\\]table': '\\table',
         'log\\(': 'ln(',
     };
 }
