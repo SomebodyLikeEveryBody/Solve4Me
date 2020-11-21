@@ -83,6 +83,8 @@ textarea#input
     padding: 10px;
     padding-top: 60px;
     font-size: 1.5em;
+    overflow-wrap: normal;
+    white-space: pre;
 }
 
 button#do_solve
@@ -166,6 +168,11 @@ div#solutions_container hr
     border-bottom: none;
     margin-top: 25px;
     margin-bottom: 10px;
+}
+
+div.label
+{
+    overflow: auto;
 }
 
 div.solution

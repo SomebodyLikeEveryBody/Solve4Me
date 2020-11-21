@@ -89,6 +89,10 @@ function DictLatexToTex() {
         '\\[\\*BCKSLSH\\*\\]pi': 'π',
         '\\[\\*BCKSLSH\\*\\]infty': '∞',
         '\\[\\*BCKSLSH\\*\\]table': '\\table',
-        'log\\(': 'ln(',
+        '\\[\\*BCKSLSH\\*\\]lim_\\{(.+?)\\[\\*BCKSLSH\\*\\]to(.+?)\\}': '\\lim↙{$1 → $2}',
+        'log': 'ln',
+        '\\[\\*BCKSLSH\\*\\]int\\[\\*BCKSLSH\\*\\]limits': '∫',
+        '\\[\\*BCKSLSH\\*\\]': '\\',
+        'sqrt\\((.+)\\)': '√{$1}'
     };
 }

@@ -59,4 +59,6 @@ $(function () {
     controller.setkeyAndMouseEvents();
     controller.synchronizeInputScreenAndOutputScreen();
     controller.hasCursorLineInInputScreenChanged();
+
+//    console.log(translater.parenthesisParse('diff(x, 3x (6 + 2x) + cos(2 exp(x)))'));
 });

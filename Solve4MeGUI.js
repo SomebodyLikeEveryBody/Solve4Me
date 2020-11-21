@@ -133,6 +133,72 @@ function Translater(pDictS4MLToTex, pDictS4MLToNerdamer, pDictLaTeXToTex) {
 
         return (outText);
     };
+
+    /*
+    * Translater.checkParenthesisPattern(pStr):
+    * Checks if pStr has as many "(" as ")"
+    * */
+    this.checkParenthesisPattern = function (pStr) {
+        let nbOpeningParenthesis = pStr.split('(').length - 1;
+        let nbClosingParenthesis = pStr.split(')').length - 1;
+
+        return (nbOpeningParenthesis === nbClosingParenthesis);
+    }
+
+    /*
+    * Translater.getOpeningParenthesisIndexes(pStr):
+    * Returns an array containing all indexes of '(' char in pStr
+    * from the last to the first (to browse it easily later given that
+    * we will process the inner parenthesis blocks before the outer)
+    * */
+    this.getOpeningParenthesisIndexes = function (pStr) {
+        let retArray = [];
+        
+        for (letterIndex in pStr) {
+            letterIndex = Number(letterIndex);
+            if (pStr[letterIndex] == '(') {
+                retArray.unshift(Number(letterIndex));
+            }
+        }
+
+        return retArray;
+    }
+
+    this.parenthesisParse = function (pExpression, pTranslateFunction) {
+        let openingParenthesisIndexes = this.getOpeningParenthesisIndexes(pExpression);
+        let count = 0
+
+        console.log('-----------------');
+        console.log(pExpression);
+        console.log(openingParenthesisIndexes)
+        console.log('-----------------');
+        
+        for (openingParenthesisIndex of openingParenthesisIndexes) {
+            console.log('--------[index ' + openingParenthesisIndex);
+            let subStr = pExpression.substring(openingParenthesisIndex);
+            let closingParenthesisIndex = subStr.indexOf(')') + openingParenthesisIndex;
+            let tempExpression = pExpression.substring(openingParenthesisIndex + 1, closingParenthesisIndex);
+
+            console.log(tempExpression.substring(0, openingParenthesisIndex))
+        }
+        
+
+        //<A FAIRE>
+
+        // solve(x, diff(x, 2x^2))
+        // ==> solve(x, diff(2x^2, x))
+        // ==> solve(diff(2x^2), x)
+
+        //dans une chaine s, chaque parenthese ouvrante contient un texte qui se trouve de l'index [tempOpeningParenthesisIndex + 1] a [pExpression.substring(tempOpeningParenthesisIndex).indexOf(')') + tempOpeningParenthesisIndex + 1]
+
+        // je prends l'expression qui est entre les parentheses les plus imbriquées et je la translate, et je transforme tous les parentheses a l'interieur par [*OPENPARENTHESIS*] et [*CLOSEPARENTHESIS*]
+        // puis je prends l'expression de degré de parenthese inferieur, et je translate, et je transforme tous les parentheses a l'interieur par [*OPENPARENTHESIS*] et [*CLOSEPARENTHESIS*]
+        // etc jusqu'à ce que je me retrouve sans plus aucune parenthese
+
+        // ==> on peut deviner la position des parentheses en parsant la chaine au depart et en trouvant les parentheses ouvrantes et les stocker dans un tableau,
+        // ==> ensuite, a chaque traitement de parenthese, on trouve sa parenthese fermante en trouvant l'index de la ) la plus proche
+
+    }
 }
 
 /******************************************************************************************
@@ -602,6 +668,14 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
         });
     };
 
+    this.updateGivenStatementsInOutputScreenIfNeeded = function (pController) {
+        let currentGivenStrInInputScreen = this.inputScreen.getGivenStr();
+        if (pController.lastKnownGivenValueInInputScreen !== currentGivenStrInInputScreen) {
+            pController.lastKnownGivenValueInInputScreen = currentGivenStrInInputScreen;
+            pController.synchronizeInputScreenAndOutputScreen();
+        }
+    };
+
     /*
     * ClickAndKeyListener.setKeyupEventsToInputScreen():
     * Function to manage the this.IsCtrlKeyIsDown attribute to permit
@@ -618,11 +692,8 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
             || (e.which === this.BACKSPACE_KEY)
             || (e.which === this.END_KEY)
             || (e.which === this.ENTER_KEY)) {
-                let currentGivenStrInInputScreen = this.inputScreen.getGivenStr();
-                if ((pController.hasCursorLineInInputScreenChanged())
-                    && (pController.lastKnownGivenValueInInputScreen !== currentGivenStrInInputScreen)) {
-                    pController.lastKnownGivenValueInInputScreen = currentGivenStrInInputScreen;
-                    pController.synchronizeInputScreenAndOutputScreen();
+                if (pController.hasCursorLineInInputScreenChanged()) {
+                    this.updateGivenStatementsInOutputScreenIfNeeded(pController);
                 }
             }
         });
@@ -632,12 +703,13 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     * ClickAndKeyListener.setClickSolveButtonEvent(pSolver):
     * Definition of what to do when we click on the solve button of the GUI.
     * */
-    this.setClickSolveButtonEvent = function (pSolver) {
+    this.setClickSolveButtonEvent = function (pSolver, pController) {
         $('button#do_solve').click(() => {
             let S4MLInstructions = this.inputScreen.getInstructions();
             let S4MLGivenStatements = this.inputScreen.getAllGivenStatements();
 
-            this.outputScreen.removeSolutionsLabel();
+            this.outputScreen.removeSolutionsLabel(pController);
+            this.updateGivenStatementsInOutputScreenIfNeeded(pController);
             if (S4MLInstructions !== '') {
                 S4MLInstructions = S4MLInstructions.split('\n');
 
@@ -672,7 +744,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     this.setkeyAndMouseEvents = function (pController, pSolver) {
         this.setKeydownEventsToInputScreen(pController);
         this.setKeyupEventsToInputScreen(pController);
-        this.setClickSolveButtonEvent(pSolver);
+        this.setClickSolveButtonEvent(pSolver, pController);
         this.setLooperEvent();
     };
 }

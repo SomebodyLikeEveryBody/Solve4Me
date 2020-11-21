@@ -57,6 +57,10 @@ function Solver() {
     this.NerdamerCore = nerdamer.getCore();
     this.nerdamerParser = this.NerdamerCore.PARSER;
 
+    this.init = function () {
+        this.defineNewFunctionsToNerdamer();
+    }
+
     this.solveInstruction = function (pExpression) {
         let retAnswer = '';
         let tempEvaluation = '';
@@ -65,28 +69,24 @@ function Solver() {
 
         try {
             tempResult = nerdamer(pExpression).toString()
-            tempEvaluation = nerdamer(tempResult).evaluate().toString();
+            tempResultStr = tempResult.toString();
+            tempEvaluation = nerdamer(tempResultStr).evaluate().toString();
             tempDecimals = nerdamer(tempEvaluation).text('decimals');
 
-            /*
-             * BUG Here, cos( 75 * pi / 180) induce bug
-             */
             if ((tempResult != pExpression) 
-                || (tempResult === tempEvaluation && tempResult === tempDecimals)) {
-                retAnswer += ' = ' + nerdamer.convertToLaTeX(tempResult) + ';';
+                || (tempResultStr === tempEvaluation && tempResult === tempDecimals)) {
+                retAnswer += ' = ' + nerdamer.convertToLaTeX(tempResultStr) + ';';
             }
             if (tempResult !== tempEvaluation) {
-                retAnswer += nerdamer.convertToLaTeX(' = ' + tempEvaluation) + ';';
+               retAnswer += ' = ' + nerdamer.convertToLaTeX(tempEvaluation) + ';';
             }
 
             if (tempEvaluation !== tempDecimals) {
-                retAnswer += ' = ' + tempDecimals.replace(/\*/g, '\.') + ';';
+               retAnswer += ' = ' + tempDecimals.replace(/\*/g, '\.') + ';';
             }
-
-            console.log(retAnswer)
         } catch (e) {
             retAnswer = '"[' + e.name + ']: ' + e.message + '"';
-            console.log(e);
+            console.log(e)
         }
 
         return retAnswer;
@@ -94,15 +94,26 @@ function Solver() {
 
     this.setGivenVars = function (pArrayGivenStatements) {
         let tempVarDef = '';
+        let counter = 1;
+        let retBool = true;
         for (givenStatement of pArrayGivenStatements) {
             if (givenStatement.includes('=')) {
                 tempVarDef = givenStatement.split('=');
                 tempVarDef = tempVarDef.map((el) => el.trim());
 
                 console.log(tempVarDef);
-                nerdamer.setVar(tempVarDef[0], tempVarDef[1]);
+                try {
+                    nerdamer.setVar(tempVarDef[0], tempVarDef[1]);
+                } catch (e) {
+                    window.alert('[Error in Given Statements N.[' + counter + ']\'s syntax]: \n\n' + e.name + '\n' + e.message)
+                    retBool = false;
+                }
             }
+
+            counter++;
         }
+
+        return retBool;
     }
 
     this.clearVars = function () {
@@ -119,26 +130,33 @@ function Solver() {
 
         this.clearVars();
         this.setDefaultVars();
-        this.setGivenVars(pArrayGivenStatements);
         
-        for (const instruction of pArrayInstructions) {
-            retArray.push(this.solveInstruction(instruction));
+        if (this.setGivenVars(pArrayGivenStatements)) {
+            for (const instruction of pArrayInstructions) {
+                retArray.push(this.solveInstruction(instruction));
+            }
         }
 
         return (retArray);
     };
 
-    nerdamer.setFunction('doubler', ['a', 'b'], 'a + b')
+    this.addFunctionToNerdamer = function (pFunctionName, pNbArgs, pFunctionPtr, pHandlerFuncPtr) {
+        this.NerdamerCore.Math2[pFunctionName] = pFunctionPtr;
+        this.nerdamerParser.functions.doubler = [pHandlerFuncPtr,pNbArgs];
+    };
 
-    // this.addFunctionToNerdamer = function (pFunctionName, pNbArgs, pFunctionPtr, pHandlerFuncPtr) {
-    //     this.NerdamerCore.Math2[pFunctionName] = pFunctionPtr;
-    //     this.nerdamerParser.functions.doubler = [pHandlerFuncPtr,pNbArgs];
-    // };
+    this.defineNewFunctionsToNerdamer = function () {
+        nerdamer.setFunction('integral', ['var', 'expression'], 'integrate(expression, var)');
+        nerdamer.setFunction('dintegral', ['var', 'start', 'end', 'expression'], 'defint(expression, start, end, var)');
+        nerdamer.setFunction('dif', ['var', 'expression'], 'diff(expression, var, 1)');
+        nerdamer.setFunction('dif2', ['var', 'expression', 'level'], 'diff(expression, var, level)');
+        nerdamer.setFunction('pfact', ['var'], 'pfactor(var)');
+        nerdamer.setFunction('solv', ['var', 'expression'], 'solve(expression, var)');
+        nerdamer.setFunction('ln', ['var'], 'log(var)');
+        nerdamer.setFunction('rad', ['var'], 'var * pi / 180');
+        nerdamer.setFunction('lg', ['base', 'val'], 'log(val) / log(base)');
+        nerdamer.setFunction('root', ['level', 'val'], 'val^(1/level)');
+    };
 
-    // this.addFunctionToNerdamer('doubler', 2, function (a, b) {
-    //     return (a + b);
-    // }, function (a, b) {
-    //     let A = this.nerdamerParser.add(a.clone(), b.clone())
-    //     return A;
-    // });
+    this.init();
 }
