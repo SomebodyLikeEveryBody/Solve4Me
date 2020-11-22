@@ -59,6 +59,7 @@ function Solver() {
 
     this.init = function () {
         this.defineNewFunctionsToNerdamer();
+        this.setSettings();
     }
 
     this.solveInstruction = function (pExpression) {
@@ -68,16 +69,17 @@ function Solver() {
         let tempResult = '';
 
         try {
-            tempResult = nerdamer(pExpression).toString()
+            tempResult = nerdamer(pExpression)
             tempResultStr = tempResult.toString();
             tempEvaluation = nerdamer(tempResultStr).evaluate().toString();
             tempDecimals = nerdamer(tempEvaluation).text('decimals');
 
-            if ((tempResult != pExpression) 
-                || (tempResultStr === tempEvaluation && tempResult === tempDecimals)) {
+            console.log('resulat nerdamer -->' + tempResultStr);
+            if ((tempResultStr != pExpression) 
+                || (tempResultStr === tempEvaluation && tempResultStr === tempDecimals)) {
                 retAnswer += ' = ' + nerdamer.convertToLaTeX(tempResultStr) + ';';
             }
-            if (tempResult !== tempEvaluation) {
+            if (tempResultStr !== tempEvaluation) {
                retAnswer += ' = ' + nerdamer.convertToLaTeX(tempEvaluation) + ';';
             }
 
@@ -120,6 +122,11 @@ function Solver() {
         nerdamer.clearVars();
     }
 
+    this.setSettings = function () {
+        nerdamer.set('integration_depth', '30')
+        nerdamer.set('SYMBOLIC_MIN_MAX', 'true')
+    }
+
     this.setDefaultVars = function () {
         nerdamer.setVar('uPa', 'kg * (m^-1) * (s^-2)');
         nerdamer.setVar('uPoiseuille', 'kg * (m^-1) * (s^-1)');
@@ -142,10 +149,13 @@ function Solver() {
 
     this.addFunctionToNerdamer = function (pFunctionName, pNbArgs, pFunctionPtr, pHandlerFuncPtr) {
         this.NerdamerCore.Math2[pFunctionName] = pFunctionPtr;
-        this.nerdamerParser.functions.doubler = [pHandlerFuncPtr,pNbArgs];
+        this.nerdamerParser.functions[pFunctionName] = [pHandlerFuncPtr, pNbArgs];
     };
 
     this.defineNewFunctionsToNerdamer = function () {
+        let core = nerdamer.getCore();
+        let _ = core.PARSER;
+
         nerdamer.setFunction('integral', ['var', 'expression'], 'integrate(expression, var)');
         nerdamer.setFunction('dintegral', ['var', 'start', 'end', 'expression'], 'defint(expression, start, end, var)');
         nerdamer.setFunction('dif', ['var', 'expression'], 'diff(expression, var, 1)');
@@ -156,6 +166,13 @@ function Solver() {
         nerdamer.setFunction('rad', ['var'], 'var * pi / 180');
         nerdamer.setFunction('lg', ['base', 'val'], 'log(val) / log(base)');
         nerdamer.setFunction('root', ['level', 'val'], 'val^(1/level)');
+
+        this.addFunctionToNerdamer('doubler', 1, function (a) {
+            return (2 + a);
+        }, function (a) {
+            let c_a = a.clone();
+            return (_.add(new core.Symbol(2), c_a));
+        });
     };
 
     this.init();

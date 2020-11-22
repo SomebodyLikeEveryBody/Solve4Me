@@ -720,7 +720,6 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
                 console.log('instruction nerdamer -->' + nerdamerInstructions[0]);
                 console.log('Given nerdamer -->' + nerdamerGivenStatements[0]);
                 let answersArray = pSolver.solveInstructions(nerdamerGivenStatements, nerdamerInstructions);
-                console.log('resulat nerdamer -->' + answersArray[0]);
                 this.outputScreen.displaySolutions(S4MLInstructions, answersArray);
             }
         });

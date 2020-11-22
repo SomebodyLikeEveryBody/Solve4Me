@@ -92,6 +92,7 @@ function DictLatexToTex() {
         '\\[\\*BCKSLSH\\*\\]lim_\\{(.+?)\\[\\*BCKSLSH\\*\\]to(.+?)\\}': '\\lim↙{$1 → $2}',
         'log': 'ln',
         '\\[\\*BCKSLSH\\*\\]int\\[\\*BCKSLSH\\*\\]limits': '∫',
+        '\\[\\*BCKSLSH\\*\\]int': '∫',
         '\\[\\*BCKSLSH\\*\\]': '\\',
         'sqrt\\((.+)\\)': '√{$1}'
     };
