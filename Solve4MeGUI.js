@@ -329,6 +329,12 @@ function InputScreen() {
 
         return instructions;
     }
+
+    this.getCurrentlyTypingWord = function () {
+        let inputTextFromStartToCursorPosition = this.getInputStr().substring(0, this.getSelectionStart());
+        
+        return inputTextFromStartToCursorPosition.split('\n').pop().split(' ').pop().trim();
+    }
 }
 
 /*******************************************************************************************
@@ -626,6 +632,20 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
     this.launchSolving = function () {
         $('button#do_solve').click();
     }
+
+    this.updateHelperContent = function () {
+        let helperEl = $('div#helper');
+        let selectedArray = g_helperFunctionsList.filter(el => el.includes(this.inputScreen.getCurrentlyTypingWord()));
+        let displayStr = '';
+
+        helperEl.html('<table>');
+        for (el of selectedArray) {
+            displayStr += '<tr><td>|___ ' + el + '</td><td>|___ [Explication]</td></tr>';
+        }
+
+        displayStr += '</table>';
+        helperEl.append(displayStr);
+    }
 }
 
 /*******************************************************************************************
@@ -683,6 +703,8 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     * */
     this.setKeyupEventsToInputScreen = function (pController) {
         this.inputScreen.keyup((e) => {
+            pController.updateHelperContent();
+
             if (e.which === this.CTRL_KEY) {
                 this.IsCtrlKeyIsDown = false;
             }
@@ -728,10 +750,10 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     /*
     * ClickAndKeyListener.setLooperEvent():
     * Definition of the loop event so that when we start with the focus on the inputScreen,
-    * when we press tab multiples times, it will alternate between the solve button and the inputScreen.
+    * when we press tab multiples times, it will alternate between the helper screen and the inputScreen.
     * */
     this.setLooperEvent = function () {
-        $('button#looper').focus(() => {
+        $('button#looper, button#do_solve').focus(() => {
             this.inputScreen.focus();
         })
     };

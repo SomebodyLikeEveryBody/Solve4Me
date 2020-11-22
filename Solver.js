@@ -158,14 +158,47 @@ function Solver() {
 
         nerdamer.setFunction('integral', ['var', 'expression'], 'integrate(expression, var)');
         nerdamer.setFunction('dintegral', ['var', 'start', 'end', 'expression'], 'defint(expression, start, end, var)');
+        nerdamer.setFunction('sineIntegral', ['val'], 'Si(val)');
+        nerdamer.setFunction('cosineIntegral', ['val'], 'Ci(val)');
+        nerdamer.setFunction('expIntegral', ['val'], 'Ei(val)');
+        nerdamer.setFunction('shIntegral', ['val'], 'Shi(val)');
+        nerdamer.setFunction('chIntegral', ['val'], 'Chi(val)');
         nerdamer.setFunction('dif', ['var', 'expression'], 'diff(expression, var, 1)');
-        nerdamer.setFunction('dif2', ['var', 'expression', 'level'], 'diff(expression, var, level)');
+        nerdamer.setFunction('dif2', ['var', 'level', 'expression'], 'diff(expression, var, level)');
         nerdamer.setFunction('pfact', ['var'], 'pfactor(var)');
         nerdamer.setFunction('solv', ['var', 'expression'], 'solve(expression, var)');
         nerdamer.setFunction('ln', ['var'], 'log(var)');
         nerdamer.setFunction('rad', ['var'], 'var * pi / 180');
         nerdamer.setFunction('lg', ['base', 'val'], 'log(val) / log(base)');
         nerdamer.setFunction('root', ['level', 'val'], 'val^(1/level)');
+        nerdamer.setFunction('matrixIdentity', ['val'], 'imatrix(val)');
+        nerdamer.setFunction('matrixDet', ['val'], 'determinant(val)');
+        nerdamer.setFunction('matrixGet', ['mat', 'row_index', 'col_index'], 'matget(mat, row_index, col_index)');
+        nerdamer.setFunction('matrixSet', ['mat', 'row_index', 'col_index', 'value'], 'matset(mat, row_index, col_index, value)');
+        nerdamer.setFunction('matrixInvert', ['mat'], 'invert(mat)');
+        nerdamer.setFunction('matrixTranspose', ['mat'], 'transpose(mat)');
+        nerdamer.setFunction('matrixGetCol', ['mat', 'col_indx'], 'matgetcol(mat, col_indx)');
+        nerdamer.setFunction('matrixSetCol', ['mat', 'col_indx', 'col_value'], 'matsetcol(mat, col_indx, col_value)');
+        nerdamer.setFunction('matrixGetRow', ['mat', 'row_indx'], 'matgetcol(mat, row_indx)');
+        nerdamer.setFunction('matrixSetRow', ['mat', 'row_indx', 'row_value'], 'matsetrow(mat, row_indx, row_value)');
+        nerdamer.setFunction('matrixSize', ['mat'], 'size(mat)');
+        nerdamer.setFunction('vectorGet', ['vect', 'indx'], 'vecget(vect, indx, value)');
+        nerdamer.setFunction('vectorSet', ['vect', 'indx'], 'vecset(vect, indx, value)');
+        nerdamer.setFunction('vectorCross', ['vect1', 'vect2'], 'cross(vect1, vect2)');
+        nerdamer.setFunction('vectorDot', ['vect1', 'vect2'], 'dot(vect1, vect2)');
+        nerdamer.setFunction('vectorSize', ['vect'], 'size(vect)');
+        nerdamer.setFunction('complexPolarForm', ['z'], 'polarform(z)');
+        nerdamer.setFunction('complexRectForm', ['z'], 'rectform(z)');
+        nerdamer.setFunction('complexMod', ['z'], 'sqrt((realpart(z))^2 + (imagpart(z))^2)');
+        nerdamer.setFunction('complexArg', ['z'], 'arg(z)');
+        nerdamer.setFunction('complexRe', ['z'], 'realpart(z)');
+        nerdamer.setFunction('complexIm', ['z'], 'imagpart(z)');
+        nerdamer.setFunction('sineCardinal', ['val'], 'sinc(val)');
+        nerdamer.setFunction('squareCompl', ['var', 'expression'], 'sqcomp(expression, var)');
+        nerdamer.setFunction('dfact', ['expression'], 'dfactorial(expression)');
+        nerdamer.setFunction('triangular', ['expression'], 'tri(expression)');
+        nerdamer.setFunction('continuedFractions', ['expression'], 'continued_fraction(expression)');
+        nerdamer.setFunction('dividePolynoms', ['p1', 'p2'], 'divide(p1, p2)');
 
         this.addFunctionToNerdamer('doubler', 1, function (a) {
             return (2 + a);
