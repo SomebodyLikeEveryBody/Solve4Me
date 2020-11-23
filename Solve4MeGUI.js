@@ -635,7 +635,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
 
     this.updateHelperContent = function () {
         let helperEl = $('div#helper');
-        let selectedArray = g_helperFunctionsList.filter(el => el.includes(this.inputScreen.getCurrentlyTypingWord()));
+        let selectedArray = g_helperFunctionsList.filter(el => el.toLowerCase().includes(this.inputScreen.getCurrentlyTypingWord().toLowerCase()));
         let displayStr = '';
 
         helperEl.html('<table>');

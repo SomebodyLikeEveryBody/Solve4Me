@@ -199,6 +199,12 @@ function Solver() {
         nerdamer.setFunction('triangular', ['expression'], 'tri(expression)');
         nerdamer.setFunction('continuedFractions', ['expression'], 'continued_fraction(expression)');
         nerdamer.setFunction('dividePolynoms', ['p1', 'p2'], 'divide(p1, p2)');
+        nerdamer.setFunction('factorize', ['expression'], 'factor(expression)');
+        nerdamer.setFunction('partialFract', ['var', 'expression'], 'partfrac(expression, var)');
+        nerdamer.setFunction('getCoeffs', ['var', 'expression'], 'coeffs(expression, var)');
+        nerdamer.setFunction('solvSys', ['sys'], 'solveEquations(sys)');
+        nerdamer.setFunction('LaplaceTransf', ['var', 't', 'expression'], 'laplace(expression, t, var)');
+        nerdamer.setFunction('invLaplaceTransf', ['var', 't', 'expression'], 'ilt(expression, t, var)');
 
         this.addFunctionToNerdamer('doubler', 1, function (a) {
             return (2 + a);

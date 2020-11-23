@@ -97,7 +97,7 @@ div#helper
     height: calc(30% - 25px);
     border-radius: 10px;
     border: black 1px solid;
-    background-color: grey;
+    background-color: rgb(99, 99, 99);
     opacity: 0.6;
     padding: 10px;
     color: white;
@@ -135,7 +135,7 @@ section#output
 {
     width: calc(100% - 22px);
     height: calc(95% - 18px);
-    background-color: rgb(107, 167, 187);
+    background-color: #6ba7bb;
     border: black 1px solid;
     border-radius: 10px;
     opacity: 0.6;
@@ -153,21 +153,21 @@ button#do_solve:focus, button#do_solve:hover
 div.formula
 {
     border: black 1px solid;
-    background-color: rgb(143, 213, 237);
+    background-color: #8fd5ed;
     padding: 10px;
     margin: 10px;
     display: flex;
-    justify-content: space-between;zz
+    justify-content: space-between;
 }
 
 div.step
 {
     border: black 1px dashed;
     border-radius: 10px;
-    background-color: rgb(150, 229, 255);
+    background-color: #96e5ff;
     padding: 10px;
     margin: 10px;
-    color: rgb(9, 100, 220);
+    color: #0964dc;
     display: flex;
     justify-content: center;
 }
@@ -197,7 +197,7 @@ div.solution
 {
     border: white 3px solid;
     border-radius: 10px;
-    background-color: rgb(150, 229, 255);
+    background-color: #96e5ff;
     padding: 10px;
     margin: 10px;
     display: flex;
