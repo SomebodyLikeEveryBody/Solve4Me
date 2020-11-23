@@ -205,12 +205,47 @@ function Solver() {
         nerdamer.setFunction('solvSys', ['sys'], 'solveEquations(sys)');
         nerdamer.setFunction('LaplaceTransf', ['var', 't', 'expression'], 'laplace(expression, t, var)');
         nerdamer.setFunction('invLaplaceTransf', ['var', 't', 'expression'], 'ilt(expression, t, var)');
+        nerdamer.setFunction('cosec', ['expression'], 'csc(expression)');
+        nerdamer.setFunction('cotan', ['expression'], 'cot(expression)');
+        nerdamer.setFunction('acosec', ['expression'], 'acsc(expression)');
+        nerdamer.setFunction('acotan', ['expression'], 'acot(expression)');
+        nerdamer.setFunction('cosech', ['expression'], 'csch(expression)');
+        nerdamer.setFunction('cotanh', ['expression'], 'coth(expression)');
+        nerdamer.setFunction('acosech', ['expression'], 'acsch(expression)');
+        nerdamer.setFunction('acotanh', ['expression'], 'acoth(expression)');
+        nerdamer.setFunction('aAverage', ['expression'], 'mean(expression)');
 
         this.addFunctionToNerdamer('doubler', 1, function (a) {
             return (2 + a);
         }, function (a) {
             let c_a = a.clone();
             return (_.add(new core.Symbol(2), c_a));
+        });
+
+        this.addFunctionToNerdamer('arithmeticCycleGen', 3, function (pNumber, pMod, pStart) {
+            // console.log(pNumber)
+            // if ((typeof (pNumber) !== typeof(42))) {
+            //     // || (typeof(pMod) !== typeof (42))
+            //     // || (typeof(pStart) !== typeof (42))
+            //     // || (!Number.isInteger(pNumber))
+            //     // || (!Number.isInteger(pMod))
+            //     //|| (!Number.isInteger(pStart))) {
+
+            //     throw new Error("Function ArithmeticCycleGen requires 3 integers as arguments");
+            // }
+
+            // let retArray = [];
+            // let limit = pMod / Number(nerdamer.gcd(pNumber, pMod).toString());
+            // console.log('limit = ' + limit)
+            // for (count = 0; count < limit; count++) {
+            //     retArray.push(Number(pNumber) * count + Number(pStart))
+            // }
+
+            // // console.log(retArray)
+            // return retArray;
+            return (42);
+        }, function (pNumber, pMod, pStart) {
+            // return (new core.Symbol('a'));
         });
     };
 
