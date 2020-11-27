@@ -3,12 +3,12 @@
  * Manage the vue problematics and solving problematics.
  * The solving problematic will in the near future be in a specific file
  * 
- * requires: ./libs/nerdamer/nerdamer.core.js"></script>
- *           ./libs/nerdamer/nerdamer.core.js"></script>
- *           ./libs/nerdamer/Algebra.js"></script>
- *           ./libs/nerdamer/Calculus.js"></script>
- *           ./libs/nerdamer/Solve.js"></script>
- *           ./libs/nerdamer/Extra.js"></script>
+ * requires: ./libs/nerdamer/nerdamer.core.js"
+ *           ./libs/nerdamer/nerdamer.core.js"
+ *           ./libs/nerdamer/Algebra.js"
+ *           ./libs/nerdamer/Calculus.js"
+ *           ./libs/nerdamer/Solve.js"
+ *           ./libs/nerdamer/Extra.js"
  */
 
 
@@ -219,33 +219,14 @@ function Solver() {
             return (2 + a);
         }, function (a) {
             let c_a = a.clone();
-            return (_.add(new core.Symbol(2), c_a));
+            return (_.add(c_a, new core.Symbol(2)));
         });
 
         this.addFunctionToNerdamer('arithmeticCycleGen', 3, function (pNumber, pMod, pStart) {
-            // console.log(pNumber)
-            // if ((typeof (pNumber) !== typeof(42))) {
-            //     // || (typeof(pMod) !== typeof (42))
-            //     // || (typeof(pStart) !== typeof (42))
-            //     // || (!Number.isInteger(pNumber))
-            //     // || (!Number.isInteger(pMod))
-            //     //|| (!Number.isInteger(pStart))) {
-
-            //     throw new Error("Function ArithmeticCycleGen requires 3 integers as arguments");
-            // }
-
-            // let retArray = [];
-            // let limit = pMod / Number(nerdamer.gcd(pNumber, pMod).toString());
-            // console.log('limit = ' + limit)
-            // for (count = 0; count < limit; count++) {
-            //     retArray.push(Number(pNumber) * count + Number(pStart))
-            // }
-
-            // // console.log(retArray)
-            // return retArray;
-            return (42);
+            //return (42);
         }, function (pNumber, pMod, pStart) {
-            // return (new core.Symbol('a'));
+            return (new core.Vector('1, 2, 3'));
+            //return (new core.Symbol('42')); 
         });
     };
 
