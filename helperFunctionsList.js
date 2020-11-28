@@ -261,7 +261,7 @@ function HelperFunctionList() {
             explanation: "Returns the derivative expression of the given expression with respect to VAR",
         },
         { 
-            keyword: "dif2(VAR, level, EXPR)", 
+            keyword: "difn(VAR, level, EXPR)", 
             explanation: "Returns the level-th derivative expression of the given expression with respect to VAR",
         },
         { 

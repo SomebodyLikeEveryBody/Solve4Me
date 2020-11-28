@@ -68,24 +68,40 @@ function Solver() {
         let tempDecimals = '';
         let tempResult = '';
 
+        //mettre les evaluate dans des try distincts pour pouvoir les catch si jamais c'est pas fait pour evaluate.
         try {
             tempResult = nerdamer(pExpression)
-            tempResultStr = tempResult.toString();
-            tempEvaluation = nerdamer(tempResultStr).evaluate().toString();
-            tempDecimals = nerdamer(tempEvaluation).text('decimals');
+            tempResultStr = tempResult.toString()
 
             console.log('resulat nerdamer -->' + tempResultStr);
             if ((tempResultStr != pExpression) 
                 || (tempResultStr === tempEvaluation && tempResultStr === tempDecimals)) {
-                retAnswer += ' = ' + nerdamer.convertToLaTeX(tempResultStr) + ';';
-            }
-            if (tempResultStr !== tempEvaluation) {
-               retAnswer += ' = ' + nerdamer.convertToLaTeX(tempEvaluation) + ';';
+                try {
+                    retAnswer += ' = ' + nerdamer.convertToLaTeX(tempResultStr) + ';';
+                } catch (e) {
+                    if (e.name === "OperatorError")  {
+                        retAnswer += ' = ' + nerdamer.convertToLaTeX(tempResult) + ';';
+                    }
+                }
+                
             }
 
-            if (tempEvaluation !== tempDecimals) {
-               retAnswer += ' = ' + tempDecimals.replace(/\*/g, '\.') + ';';
+            try {
+                tempEvaluation = nerdamer(tempResultStr).evaluate().toString();
+                tempDecimals = nerdamer(tempEvaluation).text('decimals');
+
+                if (tempResultStr !== tempEvaluation) {
+                    retAnswer += ' = ' + nerdamer.convertToLaTeX(tempEvaluation) + ';';
+                 }
+     
+                 if (tempEvaluation !== tempDecimals) {
+                    retAnswer += ' = ' + tempDecimals.replace(/\*/g, '\.') + ';';
+                 }
+
+            } catch (e) {
+                
             }
+
         } catch (e) {
             retAnswer = '"[' + e.name + ']: ' + e.message + '"';
             console.log(e)
@@ -164,7 +180,7 @@ function Solver() {
         nerdamer.setFunction('shIntegral', ['val'], 'Shi(val)');
         nerdamer.setFunction('chIntegral', ['val'], 'Chi(val)');
         nerdamer.setFunction('dif', ['var', 'expression'], 'diff(expression, var, 1)');
-        nerdamer.setFunction('dif2', ['var', 'level', 'expression'], 'diff(expression, var, level)');
+        nerdamer.setFunction('difn', ['var', 'level', 'expression'], 'diff(expression, var, level)');
         nerdamer.setFunction('pfact', ['var'], 'pfactor(var)');
         nerdamer.setFunction('solv', ['var', 'expression'], 'solve(expression, var)');
         nerdamer.setFunction('ln', ['var'], 'log(var)');
@@ -216,10 +232,11 @@ function Solver() {
         nerdamer.setFunction('aAverage', ['expression'], 'mean(expression)');
 
         this.addFunctionToNerdamer('doubler', 1, function (a) {
-            return (2 + a);
+            return (2 * a);
         }, function (a) {
             let c_a = a.clone();
-            return (_.add(c_a, new core.Symbol(2)));
+            //return (_.multiply(c_a, new core.Symbol(2)));
+            return (new core.Symbol('42'));
         });
 
         this.addFunctionToNerdamer('arithmeticCycleGen', 3, function (pNumber, pMod, pStart) {
