@@ -1,7 +1,7 @@
 /******************************************************************************
  * File name: main.js
  * Launches all features in index.htm
- * 
+ *
  * requires: ./Solve4MeGUI.js
  *           ./Solver.js
  */
@@ -53,12 +53,13 @@ $(function () {
     let inputScreen = new InputScreen();
     let outputScreen = new OutputScreen(translater);
     let controller = new Controller(inputScreen, outputScreen, solver);
-    
+
     inputScreen.focus();
     outputScreen.clear();
     controller.setkeyAndMouseEvents();
     controller.synchronizeInputScreenAndOutputScreen();
     controller.hasCursorLineInInputScreenChanged();
+    controller.updateHelperContent();
 
 //    console.log(translater.parenthesisParse('diff(x, 3x (6 + 2x) + cos(2 exp(x)))'));
 });

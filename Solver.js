@@ -68,7 +68,6 @@ function Solver() {
         let tempDecimals = '';
         let tempResult = '';
 
-        //mettre les evaluate dans des try distincts pour pouvoir les catch si jamais c'est pas fait pour evaluate.
         try {
             tempResult = nerdamer(pExpression)
             tempResultStr = tempResult.toString()
@@ -83,7 +82,6 @@ function Solver() {
                         retAnswer += ' = ' + nerdamer.convertToLaTeX(tempResult) + ';';
                     }
                 }
-                
             }
 
             try {
@@ -99,7 +97,7 @@ function Solver() {
                  }
 
             } catch (e) {
-                
+                console.log(e);    
             }
 
         } catch (e) {

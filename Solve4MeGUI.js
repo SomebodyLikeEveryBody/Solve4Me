@@ -1,8 +1,8 @@
 /******************************************************************************
  * File name: Solve4MeGUI.js
  * Manage the Vue problematics.
- * 
- * requires: ./libs/jqmath/jqmath-etc-0.4.6.min 
+ *
+ * requires: ./libs/jqmath/jqmath-etc-0.4.6.min
  *           ./libs/jquery/jquery-3.5.1.min
  */
 
@@ -60,7 +60,7 @@ function Translater(pDictS4MLToTex, pDictS4MLToNerdamer, pDictLaTeXToTex) {
     * Translater.texToMathML():
     * Takes a string in Tex and return a <(f)math> DOM object (+- with HTML) corresponding to the expression
     * Uses the M() function in jqmath.js
-    * */    
+    * */
     this.texToMathML = function (pInText) {
         let mathEl = M(pInText, true);
         return (mathEl);
@@ -76,7 +76,7 @@ function Translater(pDictS4MLToTex, pDictS4MLToNerdamer, pDictLaTeXToTex) {
         for (const key in this.dictS4MLToTex) {
             outText = outText.replace(new RegExp(String.raw( { raw: key }), 'g'), String.raw( { raw: this.dictS4MLToTex[key] }));
         }
-    
+
         return (outText);
     };
 
@@ -98,15 +98,15 @@ function Translater(pDictS4MLToTex, pDictS4MLToNerdamer, pDictLaTeXToTex) {
         for (const key in this.dictS4MLToNerdamer) {
             outText = outText.replace(new RegExp(String.raw( { raw: key } ), 'g'), String.raw( { raw: this.dictS4MLToNerdamer[key] }));
         }
-    
+
         return (outText);
     };
 
     /*
     * Translater.LaTeXToTex():
     * Takes a string in LaTeX returns it in Tex according to this.dictLaTeXToTex correspondances
-    * 
-    * Note: for some reasons I can't explain, replacing expressions containing backslash '\' (like '\cdots' or '\sum') 
+    *
+    * Note: for some reasons I can't explain, replacing expressions containing backslash '\' (like '\cdots' or '\sum')
     * with new RegExp(expression) generates parsing errors.
     * So I have to replace all '\' with [*BCKSLSH*] using /regexp/ syntax and the use "[*BCKSLSH*]" in the dicts to locate them.
     * */
@@ -117,7 +117,7 @@ function Translater(pDictS4MLToTex, pDictS4MLToNerdamer, pDictLaTeXToTex) {
         for (const key in this.dictLaTeXToTex) {
             outText = outText.replace(new RegExp(String.raw( { raw: key }), 'g'), String.raw( { raw: this.dictLaTeXToTex[key] }));
         }
-    
+
         return (outText);
     };
 
@@ -153,7 +153,7 @@ function Translater(pDictS4MLToTex, pDictS4MLToNerdamer, pDictLaTeXToTex) {
     * */
     this.getOpeningParenthesisIndexes = function (pStr) {
         let retArray = [];
-        
+
         for (letterIndex in pStr) {
             letterIndex = Number(letterIndex);
             if (pStr[letterIndex] == '(') {
@@ -178,7 +178,7 @@ function Translater(pDictS4MLToTex, pDictS4MLToNerdamer, pDictLaTeXToTex) {
         console.log(pExpression);
         console.log(openingParenthesisIndexes)
         console.log('-----------------');
-        
+
         for (openingParenthesisIndex of openingParenthesisIndexes) {
             console.log('--------[index ' + openingParenthesisIndex);
             let subStr = pExpression.substring(openingParenthesisIndex);
@@ -684,7 +684,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     this.IsCtrlKeyIsDown = false;
     this.inputScreen = pInputScreen;
     this.outputScreen = pOutputScreen;
-    
+
     /*
     * ClickAndKeyListener.setKeydownEventsToInputScreen(pController):
     * Definition of what to do when we press keys in the inputScreen.
@@ -696,7 +696,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
         this.inputScreen.keydown((e) => {
             if (e.which === this.ENTER_KEY && this.IsCtrlKeyIsDown) {
                 pController.launchSolving();
-            }    
+            }
 
             if (e.which === this.ESCAPE_KEY) {
                 this.inputScreen.clear();
