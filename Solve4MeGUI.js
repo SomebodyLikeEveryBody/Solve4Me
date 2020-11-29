@@ -744,6 +744,10 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
             }
 
             if (e.which === this.ESCAPE_KEY) {
+                this.inputScreen.autoCompletionWidget.hide();
+                this.inputScreen.autoCompletionWidget.isVisible = false;
+            }
+            if (e.which === this.ESCAPE_KEY && this.IsCtrlKeyIsDown) {
                 this.inputScreen.clear();
                 this.outputScreen.clear();
                 pController.lastKnownGivenValueInInputScreen = this.inputScreen.getGivenStr();
@@ -853,12 +857,14 @@ function AutoCompletionWidget(pInputScreen) {
     this.inputScreen = pInputScreen;
 
     this.show = function () {
-        this.jqEl.fadeIn(50);
+        this.jqEl.fadeIn(100);
     };
 
     this.hide = function () {
         let that = this;
-        this.jqEl.fadeOut(50)
+        this.jqEl.fadeOut(100, function () {
+            that.emptyContent();
+        })
     };
 
     this.emptyContent = function () {
