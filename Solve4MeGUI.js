@@ -215,6 +215,7 @@ function Translater(pDictS4MLToTex, pDictS4MLToNerdamer, pDictLaTeXToTex) {
 function InputScreen() {
     this.defaultContent = 'given:\n\nend\n\n';
     this.jqEl = $('textarea#input');
+    this.autoCompletionWidget = new AutoCompletionWidget(this);
 
     /*
     * InputScreen.keydown():
@@ -239,6 +240,7 @@ function InputScreen() {
     this.clear = function () {
         this.jqEl.val(this.defaultContent);
         this.setCursorAfterGivenKW();
+        this.autoCompletionWidget.hide();
     };
 
     /*
@@ -282,7 +284,7 @@ function InputScreen() {
     * */
     this.getInputStr = function () {
         return this.jqEl.val();
-    }
+    };
 
     /*
     * InputScreen.getGivenStr():
@@ -295,7 +297,7 @@ function InputScreen() {
         }
 
         return ('');
-    }
+    };
 
     /*
     * InputScreen.getAllGivenLines():
@@ -313,7 +315,7 @@ function InputScreen() {
         }
 
         return givenStatements;
-    }
+    };
 
     /*
     * InputScreen.getAllGivenStatements():
@@ -324,7 +326,7 @@ function InputScreen() {
         let givenLines = this.getAllGivenLines();
 
         return (givenLines.filter((str) => (str != '')));
-    }
+    };
 
     /*
     * InputScreen.getInstructions():
@@ -334,7 +336,7 @@ function InputScreen() {
         let instructions = this.getInputStr().replace(this.getGivenStr(), '').trim();
 
         return instructions;
-    }
+    };
 
     /*
     * InputScreen.getCurrentlyTypingWord():
@@ -348,7 +350,17 @@ function InputScreen() {
         let lastWordOfcursoLine = inputTextFromStartToCursorPosition.split('\n').pop().split(' ').pop();
 
         return lastWordOfcursoLine.split('(')[0].trim();
-    }
+    };
+
+    /*
+     * InputScreen.getCaretCoordinates():
+     * Returns the Top and Left coordinates of the caret in the inputScreen.
+     * Uses getCaretCoordinates() function defined in  libs/textareaCaretPosition/textareaCaretPosition.js.
+     * The code and a lot of other features are available here: https://github.com/component/textarea-caret-position
+     * */
+    this.getCaretCoordinates = function () {
+        return getCaretCoordinates(this.jqEl.get(0), this.jqEl.get(0).selectionEnd);
+    };
 }
 
 /*******************************************************************************************
@@ -655,7 +667,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
     * */
     this.updateHelperContent = function () {
         let helperEl = $('div#helper');
-        let selectedArray = this.helperFunctionList.value.filter(el => el.keyword.toLowerCase().includes(this.inputScreen.getCurrentlyTypingWord().toLowerCase()));
+        let selectedArray = this.getHelperFunctionsList();
         let displayStr = '';
 
         helperEl.html('<table>');
@@ -665,6 +677,26 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
 
         displayStr += '</table>';
         helperEl.append(displayStr);
+    }
+
+    this.getHelperFunctionsList = function () {
+        return this.helperFunctionList.value.filter(el => el.keyword.toLowerCase().includes(this.inputScreen.getCurrentlyTypingWord().toLowerCase()));
+    }
+
+    this.getKeywordsList = function () {
+        let helperFunctionsList = this.getHelperFunctionsList();
+        let retKeywords = helperFunctionsList.map((el) => {
+            let indexOfOpeningParenthesis = el.keyword.indexOf('(');
+
+            if (indexOfOpeningParenthesis !== -1) {
+                return el.keyword.substring(0, indexOfOpeningParenthesis + 1) + ')';
+            } else {
+                return el.keyword;
+            }
+        });
+
+        return (retKeywords);
+        
     }
 }
 
@@ -680,6 +712,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     this.ESCAPE_KEY = 27;
     this.BACKSPACE_KEY = 8;
     this.END_KEY = 35;
+    this.SPACE_KEY = 32;
 
     this.IsCtrlKeyIsDown = false;
     this.inputScreen = pInputScreen;
@@ -698,12 +731,28 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
                 pController.launchSolving();
             }
 
+            if (e.which === this.SPACE_KEY && this.IsCtrlKeyIsDown) {
+                if (this.inputScreen.autoCompletionWidget.isVisible === true) {
+                    this.inputScreen.autoCompletionWidget.hide();
+                    this.inputScreen.autoCompletionWidget.isVisible = false;
+                } else {
+                    let keywordsList = pController.getKeywordsList();
+
+                    this.inputScreen.autoCompletionWidget.show(keywordsList);
+                    this.inputScreen.autoCompletionWidget.isVisible = true;
+                }
+            }
+
             if (e.which === this.ESCAPE_KEY) {
                 this.inputScreen.clear();
                 this.outputScreen.clear();
                 pController.lastKnownGivenValueInInputScreen = this.inputScreen.getGivenStr();
             } else if (e.which === this.CTRL_KEY) {
                 this.IsCtrlKeyIsDown = true;
+            }
+
+            if (e.which === this.ENTER_KEY) {
+                this.inputScreen.autoCompletionWidget.hide();
             }
         });
     };
@@ -724,6 +773,10 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     this.setKeyupEventsToInputScreen = function (pController) {
         this.inputScreen.keyup((e) => {
             pController.updateHelperContent();
+
+            if (this.inputScreen.autoCompletionWidget.isVisible === true) {
+                this.inputScreen.autoCompletionWidget.updateContent(pController.getKeywordsList());
+            }
 
             if (e.which === this.CTRL_KEY) {
                 this.IsCtrlKeyIsDown = false;
@@ -787,5 +840,46 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
         this.setKeyupEventsToInputScreen(pController);
         this.setClickSolveButtonEvent(pSolver, pController);
         this.setLooperEvent();
+    };
+}
+
+function AutoCompletionWidget(pInputScreen) {
+    this.jqEl = $('ul#auto_completer');
+    this.jqEl.hide(0);
+
+    this.currentKeywordSelectedIndex = 0;
+    this.nbKeywords = 0;
+    this.isVisible = false;
+    this.inputScreen = pInputScreen;
+
+    this.show = function () {
+        this.jqEl.fadeIn(50);
+    };
+
+    this.hide = function () {
+        let that = this;
+        this.jqEl.fadeOut()
+    };
+
+    this.emptyContent = function () {
+        this.jqEl.html('');
+        this.nbKeywords = 0;
+    };
+
+    this.updateContentAndShow = function (pKwList) {
+        this.emptyContent();
+        this.nbKeywords = pKwList.length;
+        
+        if (pKwList.length !== 0) {
+            let caretCoords = this.inputScreen.getCaretCoordinates();
+            this.jqEl.css({"top":  '' + (caretCoords.top + 30) +'px', "left": '' + (caretCoords.left + 5) + 'px'});
+            for (keyword of pKwList) {
+                this.jqEl.append($('<li>' + keyword + '</li>'));
+            }
+
+            this.show();
+        } else {
+            this.hide();
+        }
     };
 }

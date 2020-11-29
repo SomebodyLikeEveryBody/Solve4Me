@@ -444,5 +444,9 @@ function HelperFunctionList() {
             keyword: "lim(VAR -> VAL, EXPRESSION)",
             explanation: "Returns the limit of the given expression expression",
         },
+        { 
+            keyword: "Infinity",
+            explanation: "Keyword to designate the INFINITY concept",
+        },
     ];
 };

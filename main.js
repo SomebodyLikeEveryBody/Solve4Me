@@ -61,5 +61,11 @@ $(function () {
     controller.hasCursorLineInInputScreenChanged();
     controller.updateHelperContent();
 
+    // let editor = CodeMirror.fromTextArea(document.getElementById("input"), {
+    //     value: "pouet",
+    //     extraKeys: {"Ctrl-Space": "autocomplete"},
+        
+    //   });
+
 //    console.log(translater.parenthesisParse('diff(x, 3x (6 + 2x) + cos(2 exp(x)))'));
 });
