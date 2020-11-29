@@ -752,7 +752,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
             }
 
             if (e.which === this.ENTER_KEY) {
-                this.inputScreen.autoCompletionWidget.hide();
+                
             }
         });
     };
@@ -775,7 +775,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
             pController.updateHelperContent();
 
             if (this.inputScreen.autoCompletionWidget.isVisible === true) {
-                this.inputScreen.autoCompletionWidget.updateContent(pController.getKeywordsList());
+                this.inputScreen.autoCompletionWidget.updateContentAndShow(pController.getKeywordsList());
             }
 
             if (e.which === this.CTRL_KEY) {
@@ -858,7 +858,7 @@ function AutoCompletionWidget(pInputScreen) {
 
     this.hide = function () {
         let that = this;
-        this.jqEl.fadeOut()
+        this.jqEl.fadeOut(50)
     };
 
     this.emptyContent = function () {
@@ -874,8 +874,10 @@ function AutoCompletionWidget(pInputScreen) {
             let caretCoords = this.inputScreen.getCaretCoordinates();
             this.jqEl.css({"top":  '' + (caretCoords.top + 30) +'px', "left": '' + (caretCoords.left + 5) + 'px'});
             for (keyword of pKwList) {
-                this.jqEl.append($('<li>' + keyword + '</li>'));
+                this.jqEl.append($('<li class="">' + keyword + '</li>'));
             }
+
+            this.jqEl.find('li:first-child').addClass('selected_keyword');
 
             this.show();
         } else {

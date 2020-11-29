@@ -245,7 +245,7 @@ ul#auto_completer
     list-style: none;
 
     margin: 0px;
-    padding: 2px;
+    padding: 0px;
     font-size: 0.8em;
     
     -webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
@@ -261,9 +261,16 @@ ul#auto_completer
     overflow-y: auto;
 }
 
-ul#autoCompleter li
+ul#auto_completer li
 {
+    border-radius: 3px;
+    padding: 3px;
+}
 
+ul#auto_completer li.selected_keyword
+{
+    background-color: #276c82;
+    color: white;
 }
 
 @media only screen and (max-width: 1000px)
