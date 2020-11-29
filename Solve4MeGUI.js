@@ -713,6 +713,8 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     this.BACKSPACE_KEY = 8;
     this.END_KEY = 35;
     this.SPACE_KEY = 32;
+    this.UP_KEY = 38;
+    this.DOWN_KEY = 40;
 
     this.IsCtrlKeyIsDown = false;
     this.inputScreen = pInputScreen;
@@ -747,6 +749,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
                 this.inputScreen.autoCompletionWidget.hide();
                 this.inputScreen.autoCompletionWidget.isVisible = false;
             }
+
             if (e.which === this.ESCAPE_KEY && this.IsCtrlKeyIsDown) {
                 this.inputScreen.clear();
                 this.outputScreen.clear();
@@ -755,8 +758,33 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
                 this.IsCtrlKeyIsDown = true;
             }
 
-            if (e.which === this.ENTER_KEY) {
-                
+            if (this.inputScreen.autoCompletionWidget.isVisible === true) {
+                if (e.which === this.ENTER_KEY) {
+                    //ajouter le mot selectionné
+                    let selectedWord = $('ul#auto_completer li.selected_keyword').text();
+                    console.log('ajouter le mot selectionné -- ' + selectedWord);
+                    e.preventDefault();
+                } else if (e.which === this.DOWN_KEY) {
+                    //descendre la selection
+                    let selectedWord = $('ul#auto_completer li.selected_keyword');
+                    let nextWord = selectedWord.next();
+                    if (nextWord.length !== 0) {
+                        selectedWord.removeClass('selected_keyword');
+                        nextWord.addClass('selected_keyword')
+                    }
+                    
+                    e.preventDefault();
+                } else if (e.which === this.UP_KEY) {
+                    //remonter la selection
+                    let selectedWord = $('ul#auto_completer li.selected_keyword');
+                    let previousWord = selectedWord.prev();
+                    if (previousWord.length !== 0) {
+                        selectedWord.removeClass('selected_keyword');
+                        previousWord.addClass('selected_keyword')
+                    }
+                    
+                    e.preventDefault();
+                }
             }
         });
     };
@@ -778,7 +806,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
         this.inputScreen.keyup((e) => {
             pController.updateHelperContent();
 
-            if (this.inputScreen.autoCompletionWidget.isVisible === true) {
+            if (this.inputScreen.autoCompletionWidget.isVisible === true && e.which !== this.UP_KEY && e.which !== this.DOWN_KEY) {
                 this.inputScreen.autoCompletionWidget.updateContentAndShow(pController.getKeywordsList());
             }
 
@@ -883,8 +911,9 @@ function AutoCompletionWidget(pInputScreen) {
                 this.jqEl.append($('<li class="">' + keyword + '</li>'));
             }
 
-            this.jqEl.find('li:first-child').addClass('selected_keyword');
-
+            if ($('ul#auto_completer li.selected_keyword').length === 0) {
+                $('ul#auto_completer li').first().addClass('selected_keyword');
+            }
             this.show();
         } else {
             this.hide();
