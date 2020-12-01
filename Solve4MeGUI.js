@@ -347,9 +347,9 @@ function InputScreen() {
     * */
     this.getCurrentlyTypingWord = function () {
         let inputTextFromStartToCursorPosition = this.getInputStr().substring(0, this.getSelectionStart());
-        let lastWordOfcursoLine = inputTextFromStartToCursorPosition.split('\n').pop().split(' ').pop();
+        let lastWordOfcursorLine = inputTextFromStartToCursorPosition.split('\n').pop().split(' ').pop();
 
-        return lastWordOfcursoLine.split('(')[0].trim();
+        return lastWordOfcursorLine.split('(')[0].trim();
     };
 
     /*
@@ -361,6 +361,26 @@ function InputScreen() {
     this.getCaretCoordinates = function () {
         return getCaretCoordinates(this.jqEl.get(0), this.jqEl.get(0).selectionEnd);
     };
+
+    /*
+     * InputScreen.setContent(pValue):
+     * Erase all the content of the inputScreen and set its content to pValue
+     * Uses getCaretCoordinates() function defined in  libs/textareaCaretPosition/textareaCaretPosition.js.
+     * The code and a lot of other features are available here: https://github.com/component/textarea-caret-position
+     * */
+    this.setContent = function (pValue) {
+        this.jqEl.val(pValue)
+    }
+
+    /*
+     * InputScreen.putCursorAt(pValue):
+     * Erase all the content of the inputScreen and set its content to pValue
+     * Uses getCaretCoordinates() function defined in  libs/textareaCaretPosition/textareaCaretPosition.js.
+     * The code and a lot of other features are available here: https://github.com/component/textarea-caret-position
+     * */
+    this.putCursorAt = function (pPosition) {
+        this.jqEl.prop('selectionEnd', pPosition)
+    }
 }
 
 /*******************************************************************************************
@@ -762,7 +782,19 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
                 if (e.which === this.ENTER_KEY) {
                     //ajouter le mot selectionné
                     let selectedWord = $('ul#auto_completer li.selected_keyword').text();
-                    console.log('ajouter le mot selectionné -- ' + selectedWord);
+                    let addedWord = selectedWord.substr(this.inputScreen.getCurrentlyTypingWord().length)
+                    let inputStr = this.inputScreen.getInputStr();
+                    let startText = inputStr.substring(0, this.inputScreen.getSelectionStart());
+                    let endText = inputStr.substring(this.inputScreen.getSelectionStart(), inputStr.length);
+                    this.inputScreen.setContent(startText + addedWord + endText);
+
+                    if (addedWord.slice(-1) === ")") {
+                        this.inputScreen.putCursorAt(startText.length + addedWord.length - 1);
+                    } else {
+                        this.inputScreen.putCursorAt(startText.length + addedWord.length);
+                    }
+                    
+                    
                     e.preventDefault();
                 } else if (e.which === this.DOWN_KEY) {
                     //descendre la selection
