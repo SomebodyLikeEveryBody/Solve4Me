@@ -1,4 +1,4 @@
-/******************************************************************************
+    /******************************************************************************
  * File name: helperFunctionList.js
  * Contain the helper informations to display in the helper screen.
  * 
@@ -447,6 +447,14 @@ function HelperFunctionList() {
         { 
             keyword: "Infinity",
             explanation: "Keyword to designate the INFINITY concept",
+        },
+        { 
+            keyword: "uPoiseuille",
+            explanation: "Poiseuille unity",
+        },
+        { 
+            keyword: "uPa",
+            explanation: "Pascal Unity",
         },
     ];
 };

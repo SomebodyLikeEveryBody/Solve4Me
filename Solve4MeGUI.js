@@ -187,23 +187,6 @@ function Translater(pDictS4MLToTex, pDictS4MLToNerdamer, pDictLaTeXToTex) {
 
             console.log(tempExpression.substring(0, openingParenthesisIndex))
         }
-        
-
-        //<Supposition>
-
-        // solve(x, diff(x, 2x^2))
-        // ==> solve(x, diff(2x^2, x))
-        // ==> solve(diff(2x^2), x)
-
-        //dans une chaine s, chaque parenthese ouvrante contient un texte qui se trouve de l'index [tempOpeningParenthesisIndex + 1] a [pExpression.substring(tempOpeningParenthesisIndex).indexOf(')') + tempOpeningParenthesisIndex + 1]
-
-        // je prends l'expression qui est entre les parentheses les plus imbriquées et je la translate, et je transforme tous les parentheses a l'interieur par [*OPENPARENTHESIS*] et [*CLOSEPARENTHESIS*]
-        // puis je prends l'expression de degré de parenthese inferieur, et je translate, et je transforme tous les parentheses a l'interieur par [*OPENPARENTHESIS*] et [*CLOSEPARENTHESIS*]
-        // etc jusqu'à ce que je me retrouve sans plus aucune parenthese
-
-        // ==> on peut deviner la position des parentheses en parsant la chaine au depart et en trouvant les parentheses ouvrantes et les stocker dans un tableau,
-        // ==> ensuite, a chaque traitement de parenthese, on trouve sa parenthese fermante en trouvant l'index de la ) la plus proche
-
     }
 }
 
@@ -744,79 +727,77 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     * ClickAndKeyListener.setKeydownEventsToInputScreen(pController):
     * Definition of what to do when we press keys in the inputScreen.
     *  .  CTRL + ENTER ==> solve
+    *  .  CTRL + ESCAPE ==> erase inputScreen and clear outputScreen
+    *  .  CTRL + SPACE ==> display / hide the auto-completer widget
     *  .  UP / DOWN / ENTER / BACKSPACE ==> synchronize inputScreen and outputScreen if necessary
-    *  .  ESCAPE ==> erase inputScreen and clear outputScreen
+    *                                       or navigation into the auto-completer widget
+    *  .  CTRL + ESCAPE ==> erase inputScreen and clear outputScreen
     * */
     this.setKeydownEventsToInputScreen = function (pController) {
         this.inputScreen.keydown((e) => {
-            if (e.which === this.ENTER_KEY && this.IsCtrlKeyIsDown) {
-                pController.launchSolving();
-            }
-
-            if (e.which === this.SPACE_KEY && this.IsCtrlKeyIsDown) {
-                if (this.inputScreen.autoCompletionWidget.isVisible === true) {
-                    this.inputScreen.autoCompletionWidget.hide();
-                    this.inputScreen.autoCompletionWidget.isVisible = false;
-                } else {
-                    let keywordsList = pController.getKeywordsList();
-
-                    this.inputScreen.autoCompletionWidget.show(keywordsList);
-                    this.inputScreen.autoCompletionWidget.isVisible = true;
-                }
-            }
-
-            if (e.which === this.ESCAPE_KEY) {
-                this.inputScreen.autoCompletionWidget.hide();
-                this.inputScreen.autoCompletionWidget.isVisible = false;
-            }
-
-            if (e.which === this.ESCAPE_KEY && this.IsCtrlKeyIsDown) {
-                this.inputScreen.clear();
-                this.outputScreen.clear();
-                pController.lastKnownGivenValueInInputScreen = this.inputScreen.getGivenStr();
-            } else if (e.which === this.CTRL_KEY) {
+            if (e.which === this.CTRL_KEY) {
                 this.IsCtrlKeyIsDown = true;
             }
 
-            if (this.inputScreen.autoCompletionWidget.isVisible === true && !this.IsCtrlKeyIsDown) {
+            /*
+             * Ctrl key down + ENTER or SPACE or ESCAPE
+             * */
+            if (this.IsCtrlKeyIsDown) {
                 if (e.which === this.ENTER_KEY) {
-                    //ajouter le mot selectionné
-                    let selectedWord = $('ul#auto_completer li.selected_keyword').text();
+                    pController.launchSolving();
+
+                } else if (e.which === this.SPACE_KEY) {
+                    if (this.inputScreen.autoCompletionWidget.isVisible === true) {
+                        this.inputScreen.autoCompletionWidget.hide();
+                        this.inputScreen.autoCompletionWidget.isVisible = false;
+
+                    } else {
+                        let keywordsList = pController.getKeywordsList();
+                        
+                        this.inputScreen.autoCompletionWidget.show(keywordsList);
+                        this.inputScreen.autoCompletionWidget.isVisible = true;
+                    }
+
+                } else if (e.which === this.ESCAPE_KEY) {
+                    this.inputScreen.clear();
+                    this.outputScreen.clear();
+                    pController.lastKnownGivenValueInInputScreen = this.inputScreen.getGivenStr();
+                }
+
+            /*
+             * Ctrl key up and auto-completer widget visible
+             * */
+            } else if (this.inputScreen.autoCompletionWidget.isVisible) {
+                if (e.which === this.ESCAPE_KEY) {
+                    this.inputScreen.autoCompletionWidget.hide();
+                    this.inputScreen.autoCompletionWidget.isVisible = false;
+
+                } else if (e.which === this.ENTER_KEY) {
+                    let selectedKeyword = this.inputScreen.autoCompletionWidget.getSelectedKeyword();
                     let currentlyTypingWord = this.inputScreen.getCurrentlyTypingWord();
-                    let addedWord = selectedWord.substr(currentlyTypingWord.length);
                     let inputStr = this.inputScreen.getInputStr();
                     let startText = inputStr.substring(0, this.inputScreen.getSelectionStart() - currentlyTypingWord.length);
                     let endText = inputStr.substring(this.inputScreen.getSelectionStart(), inputStr.length);
-                    this.inputScreen.setContent(startText + selectedWord + endText);
                     
-                    if (addedWord.slice(-1) === ")") {
-                        this.inputScreen.putCursorAt(startText.length + selectedWord.length - 1);
+                    this.inputScreen.setContent(startText + selectedKeyword + endText);
+                    
+                    if (selectedKeyword.slice(-1) === ")") {
+                        this.inputScreen.putCursorAt(startText.length + selectedKeyword.length - 1);
                     } else {
-                        this.inputScreen.putCursorAt(startText.length + selectedWord.length);
+                        this.inputScreen.putCursorAt(startText.length + selectedKeyword.length);
                     }
                     
                     this.inputScreen.autoCompletionWidget.hide();
                     this.inputScreen.autoCompletionWidget.isVisible = false;
+
                     e.preventDefault();
+
                 } else if (e.which === this.DOWN_KEY) {
-                    //descendre la selection
-                    let selectedWord = $('ul#auto_completer li.selected_keyword');
-                    let nextWord = selectedWord.next();
-                    if (nextWord.length !== 0) {
-                        selectedWord.removeClass('selected_keyword');
-                        nextWord.addClass('selected_keyword')
-                    }
-                    
+                    this.inputScreen.autoCompletionWidget.selectNextKeyword();
                     e.preventDefault();
+
                 } else if (e.which === this.UP_KEY) {
-                    //remonter la selection
-                    let selectedWord = $('ul#auto_completer li.selected_keyword');
-                    let previousWord = selectedWord.prev();
-                    if (previousWord.length !== 0) {
-                        selectedWord.removeClass('selected_keyword');
-                        previousWord.addClass('selected_keyword')
-                    }
-                    
+                    this.inputScreen.autoCompletionWidget.selectPreviousKeyword();
                     e.preventDefault();
                 }
             }
@@ -953,4 +934,38 @@ function AutoCompletionWidget(pInputScreen) {
             this.hide();
         }
     };
+
+    this.getSelectedLiEl = function () {
+        return this.jqEl.find('li.selected_keyword');
+    }
+
+    this.getSelectedKeyword = function () {
+        return this.getSelectedLiEl().text();
+    };
+
+    this.selectNextKeyword = function () {
+        let selectedLiEl = this.getSelectedLiEl();
+        let nextLiEl = selectedLiEl.next();
+
+        if (nextLiEl.length !== 0) {
+            selectedLiEl.removeClass('selected_keyword');
+            nextLiEl.addClass('selected_keyword')
+        }
+    };
+
+    this.selectPreviousKeyword = function () {
+        let selectedLiEl = this.getSelectedLiEl();
+        let previousLiEl = selectedLiEl.prev();
+        if (previousLiEl.length !== 0) {
+            selectedLiEl.removeClass('selected_keyword');
+            previousLiEl.addClass('selected_keyword')
+        }
+    }
+
+    /*
+     *
+     * NEED TO IMPLEMENT FUNCTIONS HERE TO AVOID HEAVY MANAGEMENT IN EVENTS TRUCS
+     * 
+     * */
+
 }
