@@ -236,8 +236,10 @@ ul#auto_completer
     left: 60px;
 
     border-radius: 3px;
+    /* border: 1px solid silver; */
     border: 1px solid silver;
-    background-color: rgb(255, 255, 255, 0.7);
+    /* background-color: rgba(255, 255, 255, 0.75); */
+    background-color: #4c8192;
 
     width: auto;
     max-height  : 100px;
@@ -256,9 +258,7 @@ ul#auto_completer
     font-family: monospace;
     
     max-height: 20em;
-    overflow: hidden;
-    overflow-y: scroll;
-    scroll-behavior: auto;
+    overflow: hidden;    
 }
 
 ul#auto_completer li

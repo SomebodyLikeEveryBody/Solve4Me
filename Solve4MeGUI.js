@@ -347,9 +347,9 @@ function InputScreen() {
     * */
     this.getCurrentlyTypingWord = function () {
         let inputTextFromStartToCursorPosition = this.getInputStr().substring(0, this.getSelectionStart());
-        let lastWordOfcursorLine = inputTextFromStartToCursorPosition.split('\n').pop().split(' ').pop();
+        let lastWordOfcursorLine = inputTextFromStartToCursorPosition.split('\n').pop().split(' ').pop().split('(').pop();
 
-        return lastWordOfcursorLine.split('(')[0].trim();
+        return lastWordOfcursorLine;
     };
 
     /*
@@ -715,7 +715,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
             }
         });
 
-        return (retKeywords);
+        return (retKeywords.slice(0, 11));
         
     }
 }
@@ -778,23 +778,25 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
                 this.IsCtrlKeyIsDown = true;
             }
 
-            if (this.inputScreen.autoCompletionWidget.isVisible === true) {
+            if (this.inputScreen.autoCompletionWidget.isVisible === true && !this.IsCtrlKeyIsDown) {
                 if (e.which === this.ENTER_KEY) {
                     //ajouter le mot selectionné
                     let selectedWord = $('ul#auto_completer li.selected_keyword').text();
-                    let addedWord = selectedWord.substr(this.inputScreen.getCurrentlyTypingWord().length)
+                    let currentlyTypingWord = this.inputScreen.getCurrentlyTypingWord();
+                    let addedWord = selectedWord.substr(currentlyTypingWord.length);
                     let inputStr = this.inputScreen.getInputStr();
-                    let startText = inputStr.substring(0, this.inputScreen.getSelectionStart());
+                    let startText = inputStr.substring(0, this.inputScreen.getSelectionStart() - currentlyTypingWord.length);
                     let endText = inputStr.substring(this.inputScreen.getSelectionStart(), inputStr.length);
-                    this.inputScreen.setContent(startText + addedWord + endText);
-
+                    this.inputScreen.setContent(startText + selectedWord + endText);
+                    
                     if (addedWord.slice(-1) === ")") {
-                        this.inputScreen.putCursorAt(startText.length + addedWord.length - 1);
+                        this.inputScreen.putCursorAt(startText.length + selectedWord.length - 1);
                     } else {
-                        this.inputScreen.putCursorAt(startText.length + addedWord.length);
+                        this.inputScreen.putCursorAt(startText.length + selectedWord.length);
                     }
                     
-                    
+                    this.inputScreen.autoCompletionWidget.hide();
+                    this.inputScreen.autoCompletionWidget.isVisible = false;
                     e.preventDefault();
                 } else if (e.which === this.DOWN_KEY) {
                     //descendre la selection
