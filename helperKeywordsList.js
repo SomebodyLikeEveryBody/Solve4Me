@@ -458,204 +458,187 @@ function HelperKeywordsList() {
         },
         { 
             keyword: "alpha",
-            explanation: "Pascal Unity",
+            explanation: "\"α\" greek letter",
         },
         { 
             keyword: "beta",
-            explanation: "Pascal Unity",
+            explanation: "\"β\" greek letter",
         },
         { 
             keyword: "gamma",
-            explanation: "Pascal Unity",
+            explanation: "\"γ\" greek letter",
         },
         { 
             keyword: "Gamma",
-            explanation: "Pascal Unity",
+            explanation: "\"Γ\" greek letter",
         },
         { 
             keyword: "delta",
-            explanation: "Pascal Unity",
+            explanation: "\"δ\" greek letter",
         },
         { 
             keyword: "Delta",
-            explanation: "Pascal Unity",
+            explanation: "\"∆\" greek letter",
         },
         { 
             keyword: "epsilon",
-            explanation: "Pascal Unity",
+            explanation: "\"ε\" greek letter",
         },
         { 
             keyword: "upsilon",
-            explanation: "Pascal Unity",
+            explanation: "\"υ\" greek letter",
         },
         { 
             keyword: "zeta",
-            explanation: "Pascal Unity",
+            explanation: "\"ζ\" greek letter",
         },
         { 
             keyword: "theta",
-            explanation: "Pascal Unity",
+            explanation: "\"θ\" greek letter",
         },
         { 
             keyword: "Theta",
-            explanation: "Pascal Unity",
+            explanation: "\"Θ\" greek letter",
         },
         { 
             keyword: "iota",
-            explanation: "Pascal Unity",
+            explanation: "\"ι\" greek letter",
         },
         { 
             keyword: "lambda",
-            explanation: "Pascal Unity",
+            explanation: "\"λ\" greek letter",
         },
         { 
             keyword: "Lambda",
-            explanation: "Pascal Unity",
+            explanation: "\"Λ\" greek letter",
         },
         { 
             keyword: "eta",
-            explanation: "Pascal Unity",
+            explanation: "\"η\" greek letter",
         },
         { 
             keyword: "ksi",
-            explanation: "Pascal Unity",
+            explanation: "\"ξ\" greek letter",
         },
         { 
             keyword: "Ksi",
-            explanation: "Pascal Unity",
+            explanation: "\"Ξ\" greek letter",
         },
         { 
             keyword: "pi",
-            explanation: "Pascal Unity",
+            explanation: "\"π\" greek letter",
         },
         { 
             keyword: "sigma",
-            explanation: "Pascal Unity",
+            explanation: "\"σ\" greek letter",
         },
         { 
             keyword: "Sigma",
-            explanation: "Pascal Unity",
+            explanation: "\"∑\" greek letter",
         },
         { 
             keyword: "phi",
-            explanation: "Pascal Unity",
+            explanation: "\"φ\" greek letter",
         },
         { 
             keyword: "Phi",
-            explanation: "Pascal Unity",
+            explanation: "\"Φ\" greek letter",
         },
         { 
             keyword: "psi",
-            explanation: "Pascal Unity",
+            explanation: "\"ψ\" greek letter",
         },
         { 
             keyword: "Psi",
-            explanation: "Pascal Unity",
+            explanation: "\"Ψ\" greek letter",
         },
         { 
             keyword: "omega",
-            explanation: "Pascal Unity",
+            explanation: "\"ω\" greek letter",
         },
         { 
             keyword: "Omega",
-            explanation: "Pascal Unity",
+            explanation: "\"Ω\" greek letter",
         },
         { 
             keyword: "mu",
-            explanation: "Pascal Unity",
+            explanation: "\"μ\" greek letter",
         },
         { 
             keyword: "nu",
-            explanation: "Pascal Unity",
+            explanation: "\"ν\" greek letter",
         },
         { 
             keyword: "rho",
-            explanation: "Pascal Unity",
+            explanation: "\"ρ\" greek letter",
         },
         { 
             keyword: "tau",
-            explanation: "Pascal Unity",
+            explanation: "\"τ\" greek letter",
         },
         { 
             keyword: "khi",
-            explanation: "Pascal Unity",
+            explanation: "\"χ\" greek letter",
         },
         { 
             keyword: "dron",
-            explanation: "Pascal Unity",
+            explanation: "\"∂\" = \"Partial differential\" operator",
         },
         { 
             keyword: "vgrad",
-            explanation: "Pascal Unity",
+            explanation: "\"∇↖{→}\" = \"Gradient vector\" operator",
         },
         { 
             keyword: "grad",
-            explanation: "Pascal Unity",
+            explanation: "\"∇\" = \"Gradient\" operator",
         },
         { 
             keyword: "!-C",
-            explanation: "Pascal Unity",
+            explanation: "\"∉\" = \"Doesn't belongs to\" operator",
         },
         { 
             keyword: "-C",
-            explanation: "Pascal Unity",
+            explanation: "\"∈\" = \"Belongs to\" operator",
         },
         { 
             keyword: "forall",
-            explanation: "Pascal Unity",
+            explanation: "\"∀\" = \"For all\" operator",
         },
         { 
             keyword: "iexist",
-            explanation: "Pascal Unity",
+            explanation: "\"∃\" = \"Exist\" operator",
         },
         { 
             keyword: "!iexist",
-            explanation: "Pascal Unity",
+            explanation: "\"∄\" = \"Not exist\" operator",
         },
         { 
             keyword: "sd",
-            explanation: "Pascal Unity",
+            explanation: "\"∋\" = \"such that\" operator",
         },
         { 
             keyword: "inter",
-            explanation: "Pascal Unity",
+            explanation: "\"∩\" = \"Intersection\" operator",
         },
         { 
             keyword: "union",
-            explanation: "Pascal Unity",
+            explanation: "\"∪\" = \"Union\" operator",
         },
         { 
             keyword: "included!=",
-            explanation: "Pascal Unity",
+            explanation: "\"⊊\" = \"Included and distinct\" operator",
         },
         { 
             keyword: "!included!=",
-            explanation: "Pascal Unity",
-        },
-        { 
-            keyword: "included!=",
-            explanation: "Pascal Unity",
+            explanation: "\"⊄\" = \"Not included and distinct\" Operator",
         },
         { 
             keyword: "included",
-            explanation: "Pascal Unity",
+            explanation: "\"⊆\" = \"Included\" operator",
         },
         { 
             keyword: "!included",
-            explanation: "Pascal Unity",
+            explanation: "\"⊈\" = \"Not included\" Operator",
         },
-        { 
-            keyword: "included!=",
-            explanation: "Pascal Unity",
-        },
-        { 
-            keyword: "included!=",
-            explanation: "Pascal Unity",
-        },
-        { 
-            keyword: "included!=",
-            explanation: "Pascal Unity",
-        },
-
     ];
 };

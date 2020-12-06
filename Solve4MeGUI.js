@@ -709,7 +709,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
             if (indexOfOpeningParenthesis !== -1) {
                 return el.keyword.substring(0, indexOfOpeningParenthesis + 1) + ')';
             } else {
-                return el.keyword;
+                return el.keyword + ' ';
             }
         });
 

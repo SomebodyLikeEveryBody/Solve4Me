@@ -139,7 +139,7 @@ function DictS4MLToTex() {
         'inter': '∩',
         'union': '∪',
         '!included!=': '⊄',
-        'included!=': '⊂',
+        'included!=': '⊊',
         '!included': '⊈',
         'included': '⊆',
         '\\+-': '±',
