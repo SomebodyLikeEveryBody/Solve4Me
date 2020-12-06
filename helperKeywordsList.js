@@ -450,7 +450,11 @@ function HelperKeywordsList() {
         },
         { 
             keyword: "uPoiseuille",
-            explanation: "Poiseuille unity",
+            explanation: "Poiseuille unity for he viscosity of a fluid",
+        },
+        { 
+            keyword: "uPa",
+            explanation: "Pascal unity for pressure",
         },
         { 
             keyword: "alpha",
