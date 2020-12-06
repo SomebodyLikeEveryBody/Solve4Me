@@ -1,4 +1,4 @@
-    /******************************************************************************
+ /******************************************************************************
  * File name: helperFunctionList.js
  * Contain the helper informations to display in the helper screen.
  * 
