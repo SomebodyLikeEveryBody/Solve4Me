@@ -911,6 +911,13 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
 /******************************************************************************************
 * AutoCompletionWidget:
 * Wrapper Object that manages the auto-completion feature
+* Attributes are:
+* - this.currentKeywordSelectedIndex = the index of the selected keyword in the widget
+* - this.nbKeywords = the number of keywords displayed in the widet
+* - this.isVisible = boolean, true if the widget is asked to be visible while typing,
+*                    false if not.
+*                     
+* - this.inputScreen = the inputScreen Object where the auto-completion takes place
 * */
 function AutoCompletionWidget(pInputScreen) {
     this.jqEl = $('ul#auto_completer');
@@ -921,10 +928,18 @@ function AutoCompletionWidget(pInputScreen) {
     this.isVisible = false;
     this.inputScreen = pInputScreen;
 
+    /*
+    * AutoCompletionWidget.show():
+    * Displays the auto-completion widget in the inputScreen
+    * */
     this.show = function () {
         this.jqEl.fadeIn(100);
     };
 
+    /*
+    * AutoCompletionWidget.hide():
+    * Hides the auto-completion widget
+    * */
     this.hide = function () {
         let that = this;
         this.jqEl.fadeOut(100, function () {
@@ -932,16 +947,31 @@ function AutoCompletionWidget(pInputScreen) {
         })
     };
 
+    /*
+    * AutoCompletionWidget.emptyContent():
+    * Empty the content of the widget
+    * */
     this.emptyContent = function () {
         this.jqEl.html('');
         this.nbKeywords = 0;
         this.currentKeywordSelectedIndex = -1;
     };
 
+    /*
+    * AutoCompletionWidget.getLiElements():
+    * Returns all Li elements contained in the widget
+    * */
     this.getLiElements = function () {
         return this.jqEl.find('li');
     }
 
+    /*
+    * AutoCompletionWidget.positionWidgetUnderCaret():
+    * The coordinates of the caret in the inputScreen
+    * For now, it shifts the coordinates to 30px down and 5px right
+    * but in the near future we will shift with relative values
+    * to give more flexibility
+    * */
     this.positionWidgetUnderCaret = function () {
         let caretCoords = this.inputScreen.getCaretCoordinates();
         this.jqEl.css({
@@ -950,18 +980,36 @@ function AutoCompletionWidget(pInputScreen) {
         });
     }
 
-    this.getLiElements = function () {
-        return this.jqEl.find('li');
-    }
-
+    /*
+    * AutoCompletionWidget.getFirstLiElement():
+    * Returns the first Li elements contained in the widget
+    * */
     this.getFirstLiElement = function () {
         return this.getLiElements().first();
     }
 
+    /*
+    * AutoCompletionWidget.setLiElementSelected(pLiElement):
+    * Takes a Li element (pLiElement) contained in the widget and set it to selected
+    * */    
     this.setLiElementSelected = function (pLiElement) {
         pLiElement.addClass('selected_keyword');
     }
 
+    /*
+    * AutoCompletionWidget.setLiElementUnselected(pLiElement):
+    * Takes a Li element (pLiElement) contained in the widget and set it to NOT selected
+    * */
+    this.setLiElementUnselected = function (pLiElement) {
+        pLiElement.removeClass('selected_keyword');
+    }
+
+    /*
+    * AutoCompletionWidget.updateContentAndShow(pKwList):
+    * Updates the content of the widget by clearing its content
+    * and filling it with the keyword list given in argument (pKwList).
+    * Then it displays it if there is at leat one keyword, or hide it if not.
+    * */
     this.updateContentAndShow = function (pKwList) {
         this.emptyContent();
         this.nbKeywords = pKwList.length;
@@ -984,31 +1032,50 @@ function AutoCompletionWidget(pInputScreen) {
         }
     };
 
+    /*
+    * AutoCompletionWidget.getSelectedLiEl():
+    * Returns the selected Li element in the widget
+    * */
     this.getSelectedLiEl = function () {
         return $(this.getLiElements()[this.currentKeywordSelectedIndex]);
         
     }
 
+    /*
+    * AutoCompletionWidget.getSelectedKeyword():
+    * Returns the selected keyword in the widget
+    * */
     this.getSelectedKeyword = function () {
         return this.getSelectedLiEl().text();
     };
 
+    /*
+    * AutoCompletionWidget.selectNextKeyword():
+    * Set to selected the Li element in the widget that is next to the currently
+    * selected Li element, and unselect this one
+    * */
     this.selectNextKeyword = function () {
         let selectedLiEl = this.getSelectedLiEl();
         let nextLiEl = selectedLiEl.next();
 
         if (nextLiEl.length !== 0) {
-            selectedLiEl.removeClass('selected_keyword');
+            this.setLiElementUnselected(selectedLiEl);
             nextLiEl.addClass('selected_keyword')
             this.currentKeywordSelectedIndex += 1;
         }
     };
 
+    /*
+    * AutoCompletionWidget.selectNextKeyword():
+    * Set to selected the Li element in the widget that is before to the currently
+    * selected Li element, and unselect this one
+    * */
     this.selectPreviousKeyword = function () {
         let selectedLiEl = this.getSelectedLiEl();
         let previousLiEl = selectedLiEl.prev();
+
         if (previousLiEl.length !== 0) {
-            selectedLiEl.removeClass('selected_keyword');
+            this.setLiElementUnselected(selectedLiEl);
             previousLiEl.addClass('selected_keyword');
             this.currentKeywordSelectedIndex -= 1;
         }

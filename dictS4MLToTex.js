@@ -62,7 +62,7 @@ function DictS4MLToTex() {
         'combi\\(([^()]+?), ([^()]+?)\\)': 'C(\\table $2; $1)',
         '(.) = function\\((.+?) -> (.+?), (.+?) -> (.+?)\\)': '$1 = (\\text"[App]: " $2 → $3 |  $4 → $5)',
         'alpha': 'α',
-         'beta': 'β',
+        'beta': 'β',
         'Gamma': 'Γ',
         'gamma': 'γ',
         'Delta': '∆',

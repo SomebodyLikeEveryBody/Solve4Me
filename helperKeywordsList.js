@@ -453,7 +453,35 @@ function HelperKeywordsList() {
             explanation: "Poiseuille unity",
         },
         { 
-            keyword: "uPa",
+            keyword: "alpha",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "beta",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "gamma",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "Gamma",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "delta",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "Delta",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "epsilon",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "upsilon",
             explanation: "Pascal Unity",
         },
     ];
