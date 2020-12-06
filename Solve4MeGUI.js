@@ -325,7 +325,7 @@ function InputScreen() {
     * InputScreen.getCurrentlyTypingWord():
     * Returns the word being typed by the user, more precisely, the part of the word before the "(" character.
     * For example, if we are currently typing "cos(12345" ==> it returns "cos".
-    * This function is used to filter the helperFunctionsList object to display the functions list
+    * This function is used to filter the helperKeywordsList object to display the functions list
     * according to what the user is currently typing.
     * */
     this.getCurrentlyTypingWord = function () {
@@ -545,7 +545,7 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
     this.clickAndKeyListener = new ClickAndKeyListener(this.inputScreen, this.outputScreen);
     this.lastKnownGivenValueInInputScreen = this.inputScreen.getGivenStr();
     this.lastKnownCursorLinePositionInInputScreen = 1;
-    this.helperFunctionList = new HelperFunctionList();
+    this.helperKeywordsList = new HelperKeywordsList();
 
     /*
     * Controller.hasCursorLineInInputScreenChanged():
@@ -654,7 +654,6 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
         }
     };
 
-
     /*
     * Controller.launchSolving():
     * Launchs the solving
@@ -670,25 +669,41 @@ function Controller(pInputScreen, pOutputScreen, pSolver) {
     * */
     this.updateHelperContent = function () {
         let helperEl = $('div#helper');
-        let selectedArray = this.getHelperFunctionsList();
-        let displayStr = '';
+        let selectedArray = this.getHelperKeywordsList();
+        let displayStr = '<table>';
 
-        helperEl.html('<table>');
         for (el of selectedArray) {
             displayStr += '<tr><td>|___ ' + el.keyword + '</td><td>|___ [' + el.explanation + ']</td></tr>';
         }
 
         displayStr += '</table>';
-        helperEl.append(displayStr);
+        helperEl.html(displayStr);
     }
 
-    this.getHelperFunctionsList = function () {
-        return this.helperFunctionList.value.filter(el => el.keyword.toLowerCase().includes(this.inputScreen.getCurrentlyTypingWord().toLowerCase()));
+    /*
+    * Controller.getHelperKeywordsList():
+    * Returns an array containing all keywords and explanations contained in the helperKeywordsList object,
+    * but onluy keywords that contains the words that is currently typed in the inputScreen
+    * */
+    this.getHelperKeywordsList = function () {
+        return this.helperKeywordsList.value.filter(el => el.keyword.toLowerCase().includes(this.inputScreen.getCurrentlyTypingWord().toLowerCase()));
     }
+    /*
 
+    * Controller.getKeywordsList():
+    * Returns an array containing the first 11 keywords contained in the helperKeywordsList object,
+    * but onluy keywords that contains the words that is currently typed in the inputScreen.
+    * But here, "keyword" is meant the string part before the opening parenthesis.
+    * To be clear:
+    * - if the keyword is a function, like "solv(VAR, EXPR)", the returned keyword in in the array
+    *   will be "solv()"
+    * - if the keyword isn't a function, like "Infinity", the returned keyword in the array
+    *   will be "Infinity"
+    * 
+    * */
     this.getKeywordsList = function () {
-        let helperFunctionsList = this.getHelperFunctionsList();
-        let retKeywords = helperFunctionsList.map((el) => {
+        let helperKeywordsList = this.getHelperKeywordsList();
+        let retKeywords = helperKeywordsList.map((el) => {
             let indexOfOpeningParenthesis = el.keyword.indexOf('(');
 
             if (indexOfOpeningParenthesis !== -1) {
@@ -753,7 +768,6 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
 
                     } else {
                         let keywordsList = pController.getKeywordsList();
-                        
                         this.inputScreen.autoCompletionWidget.show(keywordsList);
                         this.inputScreen.autoCompletionWidget.isVisible = true;
                     }
@@ -765,7 +779,7 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
                 }
 
             /*
-             * Ctrl key up and auto-completer widget visible
+             * Ctrl key is up and auto-completer widget is visible
              * */
             } else if (this.inputScreen.autoCompletionWidget.isVisible) {
                 if (e.which === this.ESCAPE_KEY) {
@@ -804,6 +818,10 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
         });
     };
 
+    /*
+    * ClickAndKeyListener.updateGivenStatementsInOutputScreenIfNeeded(pController):
+    * Updates the shown givens statements in the outputScreen if they differ with those in the inputScreen
+    * */
     this.updateGivenStatementsInOutputScreenIfNeeded = function (pController) {
         let currentGivenStrInInputScreen = this.inputScreen.getGivenStr();
         if (pController.lastKnownGivenValueInInputScreen !== currentGivenStrInInputScreen) {
@@ -814,8 +832,8 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
 
     /*
     * ClickAndKeyListener.setKeyupEventsToInputScreen():
-    * Function to manage the this.IsCtrlKeyIsDown attribute to permit
-    * the (CTRL + ENTER ==> solve) feature
+    * Definition of what to do when we release keys in the inputScreen.
+    * Very usefull to manage the navigation into the auto-completionWidget
     * */
     this.setKeyupEventsToInputScreen = function (pController) {
         this.inputScreen.keyup((e) => {
@@ -890,6 +908,10 @@ function ClickAndKeyListener(pInputScreen, pOutputScreen) {
     };
 }
 
+/******************************************************************************************
+* AutoCompletionWidget:
+* Wrapper Object that manages the auto-completion feature
+* */
 function AutoCompletionWidget(pInputScreen) {
     this.jqEl = $('ul#auto_completer');
     this.jqEl.hide(0);
@@ -961,11 +983,4 @@ function AutoCompletionWidget(pInputScreen) {
             previousLiEl.addClass('selected_keyword')
         }
     }
-
-    /*
-     *
-     * NEED TO IMPLEMENT FUNCTIONS HERE TO AVOID HEAVY MANAGEMENT IN EVENTS TRUCS
-     * 
-     * */
-
 }
