@@ -488,5 +488,174 @@ function HelperKeywordsList() {
             keyword: "upsilon",
             explanation: "Pascal Unity",
         },
+        { 
+            keyword: "zeta",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "theta",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "Theta",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "iota",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "lambda",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "Lambda",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "eta",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "ksi",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "Ksi",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "pi",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "sigma",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "Sigma",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "phi",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "Phi",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "psi",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "Psi",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "omega",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "Omega",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "mu",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "nu",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "rho",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "tau",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "khi",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "dron",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "vgrad",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "grad",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "!-C",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "-C",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "forall",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "iexist",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "!iexist",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "sd",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "inter",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "union",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "included!=",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "!included!=",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "included!=",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "included",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "!included",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "included!=",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "included!=",
+            explanation: "Pascal Unity",
+        },
+        { 
+            keyword: "included!=",
+            explanation: "Pascal Unity",
+        },
+
     ];
 };
