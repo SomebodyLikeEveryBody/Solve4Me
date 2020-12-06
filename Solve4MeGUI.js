@@ -916,7 +916,7 @@ function AutoCompletionWidget(pInputScreen) {
     this.jqEl = $('ul#auto_completer');
     this.jqEl.hide(0);
 
-    this.currentKeywordSelectedIndex = 0;
+    this.currentKeywordSelectedIndex = -1;
     this.nbKeywords = 0;
     this.isVisible = false;
     this.inputScreen = pInputScreen;
@@ -935,30 +935,58 @@ function AutoCompletionWidget(pInputScreen) {
     this.emptyContent = function () {
         this.jqEl.html('');
         this.nbKeywords = 0;
+        this.currentKeywordSelectedIndex = -1;
     };
+
+    this.getLiElements = function () {
+        return this.jqEl.find('li');
+    }
+
+    this.positionWidgetUnderCaret = function () {
+        let caretCoords = this.inputScreen.getCaretCoordinates();
+        this.jqEl.css({
+            "top":  '' + (caretCoords.top + 30) +'px',
+            "left": '' + (caretCoords.left + 5) + 'px'
+        });
+    }
+
+    this.getLiElements = function () {
+        return this.jqEl.find('li');
+    }
+
+    this.getFirstLiElement = function () {
+        return this.getLiElements().first();
+    }
+
+    this.setLiElementSelected = function (pLiElement) {
+        pLiElement.addClass('selected_keyword');
+    }
 
     this.updateContentAndShow = function (pKwList) {
         this.emptyContent();
         this.nbKeywords = pKwList.length;
         
         if (pKwList.length !== 0) {
-            let caretCoords = this.inputScreen.getCaretCoordinates();
-            this.jqEl.css({"top":  '' + (caretCoords.top + 30) +'px', "left": '' + (caretCoords.left + 5) + 'px'});
+            this.positionWidgetUnderCaret();
             for (keyword of pKwList) {
-                this.jqEl.append($('<li class="">' + keyword + '</li>'));
+                this.jqEl.append($('<li>' + keyword + '</li>'));
             }
 
-            if ($('ul#auto_completer li.selected_keyword').length === 0) {
-                $('ul#auto_completer li').first().addClass('selected_keyword');
+            if (this.currentKeywordSelectedIndex === -1) {
+                this.setLiElementSelected(this.getFirstLiElement());
+                this.currentKeywordSelectedIndex = 0;
             }
+
             this.show();
+
         } else {
             this.hide();
         }
     };
 
     this.getSelectedLiEl = function () {
-        return this.jqEl.find('li.selected_keyword');
+        return $(this.getLiElements()[this.currentKeywordSelectedIndex]);
+        
     }
 
     this.getSelectedKeyword = function () {
@@ -972,6 +1000,7 @@ function AutoCompletionWidget(pInputScreen) {
         if (nextLiEl.length !== 0) {
             selectedLiEl.removeClass('selected_keyword');
             nextLiEl.addClass('selected_keyword')
+            this.currentKeywordSelectedIndex += 1;
         }
     };
 
@@ -980,7 +1009,8 @@ function AutoCompletionWidget(pInputScreen) {
         let previousLiEl = selectedLiEl.prev();
         if (previousLiEl.length !== 0) {
             selectedLiEl.removeClass('selected_keyword');
-            previousLiEl.addClass('selected_keyword')
+            previousLiEl.addClass('selected_keyword');
+            this.currentKeywordSelectedIndex -= 1;
         }
     }
 }
