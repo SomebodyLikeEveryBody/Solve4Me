@@ -7,6 +7,8 @@
 Solve4Me will be a powerful equation solver
 ==> [Beta test](https://somebodylikeeverybody.github.io/Solve4Me/)
 
+Working on V2 [here](https://github.com/SomebodyLikeEveryBody/Solve4MeV2) && [here](https://somebodylikeeverybody.github.io/Solve4MeV2/build/index.htm)
+
 ## Explanation
 
 As rebuilding the wheel is very important and useful to learn and understand how things works, but frequently counterproductive to quickly produce solutions to problematics, working on equations solving "manually" (with a pen and some paper) is very interesting to learn how mathematicals concepts works, but probably a waste of time to solve daily problems which can be depicted by an equation system (linear equations, mathematical objects that correspond to specific characteristics, ...).
